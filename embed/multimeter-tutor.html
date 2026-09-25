@@ -1,0 +1,1496 @@
+<meta charset="utf-8">
+<title>W2972 Bench Coach</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+/* ============================================================
+   Tokens. Bare :root carries the COMPLETE light palette.
+   Dark redefines tokens only - never component rules.
+   ============================================================ */
+:root{
+  --bg:#E9EBEE;
+  --surface:#FFFFFF;
+  --surface-2:#F1F3F6;
+  --surface-3:#E3E7EC;
+  --ink:#16181C;
+  --ink-2:#5B6472;
+  --ink-3:#858E9B;
+  --line:#D2D8DF;
+  --line-2:#BFC7D1;
+
+  --accent:#C9880A;          /* signal yellow, deepened for light-ground contrast */
+  --accent-bright:#F2B705;   /* the housing yellow itself */
+  --accent-soft:#FBEFD2;
+  --on-accent:#1A1204;
+
+  --hazard:#B4291F;
+  --hazard-soft:#FBE9E7;
+  --ok:#1F7A55;
+  --ok-soft:#E2F3EB;
+
+  /* physical object - near-constant across themes */
+  --lcd-bg:#A8B79A;
+  --lcd-off:#9AA88D;
+  --lcd-ink:#14180F;
+  --body-yellow:#F2B705;
+  --body-yellow-dk:#D19A04;
+  --body-dark:#26282C;
+  --body-dark-2:#15171A;
+  --metal:#B9BEC6;
+
+  --r-sm:4px; --r-md:8px; --r-lg:14px;
+  --shadow:0 1px 2px rgba(16,20,26,.07), 0 6px 20px -8px rgba(16,20,26,.22);
+
+  --font-ui:"Barlow Semi Condensed",'Arial Narrow',system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121316;
+    --surface:#1B1D21;
+    --surface-2:#232629;
+    --surface-3:#2C3035;
+    --ink:#E8EAED;
+    --ink-2:#9AA3AF;
+    --ink-3:#727C89;
+    --line:#33373E;
+    --line-2:#434952;
+    --accent:#F2B705;
+    --accent-bright:#F2B705;
+    --accent-soft:#332703;
+    --on-accent:#12130F;
+    --hazard:#FF7A6D;
+    --hazard-soft:#33170F;
+    --ok:#4CC38A;
+    --ok-soft:#0F2A1F;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -10px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121316; --surface:#1B1D21; --surface-2:#232629; --surface-3:#2C3035;
+  --ink:#E8EAED; --ink-2:#9AA3AF; --ink-3:#727C89; --line:#33373E; --line-2:#434952;
+  --accent:#F2B705; --accent-bright:#F2B705; --accent-soft:#332703; --on-accent:#12130F;
+  --hazard:#FF7A6D; --hazard-soft:#33170F; --ok:#4CC38A; --ok-soft:#0F2A1F;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -10px rgba(0,0,0,.6);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-body); font-size:15px; line-height:1.55;
+  -webkit-text-size-adjust:100%;
+}
+h1,h2,h3{font-family:var(--font-ui); text-wrap:balance; margin:0; line-height:1.15}
+button{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:var(--r-sm)}
+
+/* ============================================================
+   Shell - vertical split. Meter left, briefing right.
+   ============================================================ */
+.app{
+  display:grid; grid-template-columns:minmax(300px,44%) 1fr;
+  min-height:100vh; max-width:1500px; margin:0 auto;
+}
+.stage{
+  background:linear-gradient(180deg,var(--surface-3),var(--bg));
+  border-right:1px solid var(--line);
+  padding:20px 16px 28px;
+  display:flex; flex-direction:column; align-items:center; gap:14px;
+  position:sticky; top:0; height:100vh; overflow-y:auto;
+}
+.panel{padding:20px 22px 60px; display:flex; flex-direction:column; gap:16px; min-width:0}
+
+@media (max-width:900px){
+  .app{grid-template-columns:1fr}
+  .stage{position:static; height:auto; border-right:none; border-bottom:1px solid var(--line); padding:14px 12px 18px}
+  .panel{padding:16px 14px 60px}
+  #meter{max-width:286px}
+}
+
+/* ============================================================
+   Meter artwork
+   ============================================================ */
+#meter{width:100%; max-width:332px; height:auto; display:block; filter:drop-shadow(0 12px 28px rgba(0,0,0,.28))}
+.knob-grp{transform-box:view-box; transform-origin:190px 480px; transition:transform .55s cubic-bezier(.34,1.3,.5,1)}
+.jack-ring{opacity:0; transition:opacity .3s}
+.jack-ring.on{opacity:1; animation:pulse 2.1s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.6} 50%{opacity:1}}
+.dial-label{font-family:var(--font-ui); font-weight:600; fill:#D8DCE2}
+.dial-label.hot{fill:var(--body-yellow); font-weight:700}
+.tick{transition:fill .3s}
+.tick.hot{fill:var(--body-yellow)}
+.arc-label{font-family:var(--font-ui); font-weight:700; font-size:11px; letter-spacing:.1em; fill:#9DA5B0}
+.dial-grp-arc{opacity:.85}
+.lead{transition:d .45s ease, opacity .3s}
+.seg{fill:var(--lcd-ink)}
+.seg.off{fill:var(--lcd-off)}
+.lcd-unit{font-family:var(--font-ui); font-size:15px; font-weight:700; fill:var(--lcd-ink); opacity:.8; text-anchor:end}
+.lcd-badge{font-family:var(--font-ui); font-size:9.5px; font-weight:700; letter-spacing:.09em; fill:var(--lcd-ink); opacity:.45}
+.jack-label{font-family:var(--font-ui); font-size:13px; font-weight:700; letter-spacing:.03em; fill:#EDEFF2}
+@media (prefers-reduced-motion:reduce){
+  .knob-grp{transition:none}
+  .jack-ring.on{animation:none}
+  .lead{transition:none}
+}
+
+/* setup strip under the meter */
+.setup{display:flex; flex-wrap:wrap; gap:6px; justify-content:center; width:100%; max-width:340px}
+.chip{
+  display:inline-flex; align-items:baseline; gap:6px;
+  background:var(--surface); border:1px solid var(--line);
+  border-radius:100px; padding:4px 11px; font-family:var(--font-ui);
+  font-size:13px; font-weight:600; letter-spacing:.02em;
+}
+.chip b{font-family:var(--font-mono); font-size:12px; font-weight:600}
+.chip.red{border-color:#C4433A; color:#C4433A}
+.chip.blk{border-color:var(--ink-2); color:var(--ink-2)}
+.chip.dial{border-color:var(--accent); color:var(--accent); background:var(--accent-soft)}
+
+.unverified{
+  width:100%; max-width:340px; font-size:11.5px; line-height:1.4;
+  background:var(--hazard-soft); color:var(--hazard);
+  border:1px solid currentColor; border-radius:var(--r-md);
+  padding:7px 10px; font-family:var(--font-ui); font-weight:600;
+}
+
+/* ============================================================
+   Panel chrome
+   ============================================================ */
+.masthead{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap}
+.masthead h1{font-size:25px; font-weight:700; letter-spacing:-.01em}
+.masthead p{margin:2px 0 0; color:var(--ink-2); font-size:13.5px}
+.eyebrow{
+  font-family:var(--font-ui); font-size:11px; font-weight:700;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--accent);
+}
+
+.segmented{display:flex; gap:2px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--r-md); padding:3px}
+.segmented button{
+  flex:1; border:0; background:transparent; padding:7px 10px; cursor:pointer;
+  font-family:var(--font-ui); font-weight:600; font-size:14px; letter-spacing:.02em;
+  border-radius:var(--r-sm); color:var(--ink-2);
+}
+.segmented button[aria-selected="true"]{background:var(--surface); color:var(--ink); box-shadow:var(--shadow)}
+
+.hit{cursor:pointer}
+.hit:hover .dial-label{fill:var(--accent-bright)}
+.hit:focus-visible{outline:none}
+#btnPower.active circle:first-child{stroke:#FFF3C4; stroke-width:3}
+#btnHold.active circle{fill:#6E8BEE; stroke:#FFF}
+.pt-logo{font-family:var(--font-ui); font-size:30px; font-weight:700; font-style:italic; fill:#C9CDD4; letter-spacing:-.02em}
+.btn-label{font-family:var(--font-ui); font-size:12px; font-weight:700; letter-spacing:.08em; fill:#D6DAE0}
+.jack-sub{font-family:var(--font-ui); font-size:8.6px; font-weight:600; letter-spacing:.02em; fill:#C7CCD3}
+
+.verdict{margin:0; width:100%; max-width:404px; font-size:13.5px; line-height:1.45;
+  border-left:3px solid var(--ink-3); padding:4px 0 4px 11px; color:var(--ink-2)}
+.verdict em{display:block; color:var(--hazard); font-style:normal; font-weight:600; margin-top:3px}
+.verdict.good{border-color:var(--ok); color:var(--ink)}
+.verdict.warn{border-color:var(--accent); color:var(--ink)}
+.verdict.bad{border-color:var(--hazard); color:var(--hazard); font-weight:600}
+.fuses[hidden]{display:none}
+.fuses{width:100%; max-width:404px; background:var(--hazard-soft); color:var(--hazard);
+  border:1px solid currentColor; border-radius:var(--r-md); padding:9px 11px; font-size:13px;
+  display:flex; gap:9px; align-items:center; flex-wrap:wrap}
+.bench{display:flex; gap:10px; width:100%; max-width:404px; align-items:flex-end; flex-wrap:wrap}
+.fld{flex:1; min-width:170px; display:flex; flex-direction:column; gap:3px}
+.fld span{font-family:var(--font-ui); font-size:10.5px; font-weight:700; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--ink-3)}
+.fld select{width:100%; font:inherit; font-size:14px; padding:8px 10px; background:var(--surface);
+  color:var(--ink); border:1px solid var(--line-2); border-radius:var(--r-md)}
+.moving{border:1px solid var(--line-2); border-radius:var(--r-md); padding:2px 9px 6px; margin:0; background:var(--surface)}
+.moving legend{font-family:var(--font-ui); font-size:10px; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-3); padding:0 4px}
+.moving label{font-size:13.5px; margin-right:7px; cursor:pointer}
+.hint{margin:0; width:100%; max-width:404px; font-size:12px; color:var(--ink-3); line-height:1.45}
+.view[hidden]{display:none}
+.view{display:flex; flex-direction:column; gap:14px; min-width:0}
+
+/* ============================================================
+   The briefing - the "what to expect" side
+   ============================================================ */
+.brief-head{display:flex; flex-direction:column; gap:5px}
+.brief-head h2{font-size:22px; font-weight:700}
+.brief-head .why{color:var(--ink-2); font-size:14.5px; max-width:64ch}
+
+.block{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); overflow:hidden}
+.block > h3{
+  font-family:var(--font-ui); font-size:11.5px; font-weight:700; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--ink-3);
+  padding:11px 15px 0;
+}
+.block > *:last-child{margin-bottom:0}
+
+ol.steps{margin:8px 0 14px; padding:0 15px 0 34px; display:flex; flex-direction:column; gap:7px}
+ol.steps li{font-size:14.5px; padding-left:3px}
+ol.steps li::marker{font-family:var(--font-mono); font-size:12px; color:var(--accent); font-weight:600}
+ol.steps b{font-family:var(--font-mono); font-size:13px; background:var(--surface-2); padding:1px 5px; border-radius:var(--r-sm); font-weight:600}
+
+/* expected-readings table: the heart of "what should I see" */
+.expect-wrap{overflow-x:auto; margin:8px 0 0}
+table.expect{width:100%; border-collapse:collapse; font-size:14px}
+table.expect th{
+  text-align:left; font-family:var(--font-ui); font-size:11px; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3);
+  padding:6px 15px; border-bottom:1px solid var(--line); white-space:nowrap;
+}
+table.expect td{padding:9px 15px; border-bottom:1px solid var(--line); vertical-align:top}
+table.expect tr:last-child td{border-bottom:0}
+table.expect td.val{
+  font-family:var(--font-mono); font-weight:600; font-size:13.5px;
+  white-space:nowrap; font-variant-numeric:tabular-nums;
+}
+td.val .dot{display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:7px; vertical-align:middle}
+.dot.good{background:var(--ok)} .dot.warn{background:var(--accent)} .dot.bad{background:var(--hazard)} .dot.neut{background:var(--ink-3)}
+
+/* severity notes */
+.note{display:flex; gap:10px; padding:11px 14px; border-radius:var(--r-lg); font-size:14px; line-height:1.5}
+.note .ic{font-family:var(--font-ui); font-weight:700; font-size:12px; letter-spacing:.08em; flex:0 0 auto; padding-top:1px}
+.note.danger{background:var(--hazard-soft); color:var(--hazard); border:1px solid currentColor}
+.note.danger strong{color:inherit}
+.note.tip{background:var(--surface-2); color:var(--ink-2); border:1px solid var(--line)}
+.note.tip .ic{color:var(--accent)}
+
+/* ============================================================
+   Browse / library
+   ============================================================ */
+.search{
+  width:100%; padding:11px 14px; font:inherit; font-size:15px;
+  background:var(--surface); color:var(--ink);
+  border:1px solid var(--line-2); border-radius:var(--r-md);
+}
+.search::placeholder{color:var(--ink-3)}
+.grouphead{
+  font-family:var(--font-ui); font-size:11.5px; font-weight:700; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--ink-3); margin:6px 0 -4px;
+  display:flex; align-items:center; gap:9px;
+}
+.grouphead::after{content:""; flex:1; height:1px; background:var(--line)}
+.joblist{display:flex; flex-direction:column; gap:6px}
+.job{
+  display:flex; align-items:baseline; gap:10px; width:100%; text-align:left;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md);
+  padding:10px 13px; cursor:pointer; transition:border-color .15s, transform .1s;
+}
+.job:hover{border-color:var(--accent)}
+.job:active{transform:translateY(1px)}
+.job[aria-current="true"]{border-color:var(--accent); background:var(--accent-soft)}
+.job .t{font-weight:500; font-size:14.5px; flex:1; min-width:0}
+.job .d{font-family:var(--font-mono); font-size:11.5px; color:var(--ink-3); white-space:nowrap}
+.empty{color:var(--ink-3); font-size:14px; padding:14px 2px}
+
+/* ============================================================
+   Ask Claude
+   ============================================================ */
+.ask-form{display:flex; gap:8px; align-items:flex-end}
+.ask-form textarea{
+  flex:1; font:inherit; font-size:15px; padding:10px 13px; resize:vertical; min-height:74px;
+  background:var(--surface); color:var(--ink); border:1px solid var(--line-2); border-radius:var(--r-md);
+}
+.btn{
+  border:1px solid transparent; background:var(--accent); color:var(--on-accent);
+  font-family:var(--font-ui); font-weight:700; font-size:15px; letter-spacing:.02em;
+  padding:11px 18px; border-radius:var(--r-md); cursor:pointer; white-space:nowrap;
+}
+.btn:disabled{opacity:.5; cursor:default}
+.btn.ghost{background:transparent; border-color:var(--line-2); color:var(--ink-2); font-size:13px; padding:7px 13px}
+.suggest{display:flex; flex-wrap:wrap; gap:6px}
+.thinking{color:var(--ink-2); font-size:14px; font-style:italic}
+.answer{font-size:15px; line-height:1.6; max-width:64ch}
+.askoff{
+  background:var(--surface-2); border:1px dashed var(--line-2); border-radius:var(--r-lg);
+  padding:16px; color:var(--ink-2); font-size:14px;
+}
+.footnote{color:var(--ink-3); font-size:12px; line-height:1.5; max-width:70ch}
+.footnote a{color:var(--accent)}
+</style>
+
+<div class="app">
+  <aside class="stage">
+    <svg id="meter" viewBox="0 0 340 560" role="img" aria-labelledby="meterttl"><title id="meterttl">Performance Tool W2972 multimeter, showing the dial position and lead placement for the selected job</title></svg>
+    <div class="setup" id="setup"></div>
+    <p class="verdict neut" id="verdict"></p>
+    <div class="fuses" id="fuses" hidden></div>
+    <div class="bench">
+      <label class="fld"><span>Probing</span><select id="subject"></select></label>
+      <fieldset class="moving">
+        <legend>Click a jack to move</legend>
+        <label><input type="radio" name="moving" value="red" checked> Red</label>
+        <label><input type="radio" name="moving" value="black"> Black</label>
+      </fieldset>
+    </div>
+    <p class="hint">Turn the dial, move the leads, press POWER and HOLD. It reads what the real meter would &mdash; including the mistakes.</p>
+    <div class="unverified" id="unverified" hidden></div>
+  </aside>
+
+  <main class="panel">
+    <div class="masthead">
+      <div>
+        <div class="eyebrow">Performance Tool W2972</div>
+        <h1>Where do the leads go?</h1>
+        <p>Pick a job. The meter shows the setup; this side tells you what you should see.</p>
+      </div>
+      <button class="btn ghost" id="themebtn" type="button">Theme</button>
+    </div>
+
+    <div class="segmented" role="tablist">
+      <button role="tab" id="tab-job" aria-selected="true" aria-controls="view-job">This job</button>
+      <button role="tab" id="tab-browse" aria-selected="false" aria-controls="view-browse">Browse</button>
+      <button role="tab" id="tab-ask" aria-selected="false" aria-controls="view-ask">Ask</button>
+    </div>
+
+    <section class="view" id="view-job" role="tabpanel" aria-labelledby="tab-job"></section>
+
+    <section class="view" id="view-browse" role="tabpanel" aria-labelledby="tab-browse" hidden>
+      <input class="search" id="search" type="search" placeholder="Search jobs - battery, dryer, continuity, fuse..." autocomplete="off">
+      <div id="joblist"></div>
+    </section>
+
+    <section class="view" id="view-ask" role="tabpanel" aria-labelledby="tab-ask" hidden></section>
+  </main>
+</div>
+
+<script>
+"use strict";
+
+/* ================================================================
+   METER SPEC - the only thing that needs changing if the physical
+   dial differs. Everything (artwork, chips, validation, the prompt
+   sent to Claude) is generated from this object.
+   ================================================================ */
+const OHM = "\u03A9", MU = "\u00B5";
+
+const METER = {
+  model: "Performance Tool W2972",
+  verified: false,
+  unsure: ["dca20m","dca200m","acv200m"],
+  cat: "CAT III 600V / CAT II 1000V",
+  maxDCV: 1000, maxACV: 750,
+  jacks: [
+    { id:"A10",  label:"A",            sub:"10A MAX FUSED",    note:"High current only, up to 10 A. Fused. The meter must sit IN SERIES." },
+    { id:"MA",   label:"mA",           sub:"200mA MAX FUSED",  note:"Small current, up to 200 mA. Fused. Also in series." },
+    { id:"COM",  label:"COM",          sub:"",                 note:"Black lead lives here. Always. Every measurement." },
+    { id:"VOHM", label:"V"+OHM+"\u21e5", sub:"CAT III 600V",  note:"Red lead for volts, ohms, continuity and diode." }
+  ],
+  /* Clockwise, read off the dial face. There is no OFF - power is a button. */
+  dial: [
+    { id:"diode",    label:"\u21e5\u00b7)))", group:"TEST", desc:"Diode test and continuity share one position. Beeps on a near-short; shows forward voltage on a diode." },
+    { id:"ohm200",   label:"200",   group:"OHM", max:200,     desc:"Resistance up to 200 "+OHM+". Elements, coils, thermal fuses." },
+    { id:"ohm2k",    label:"2k",    group:"OHM", max:2e3,     desc:"Resistance up to 2 k"+OHM+"." },
+    { id:"ohm20k",   label:"20k",   group:"OHM", max:2e4,     desc:"Resistance up to 20 k"+OHM+"." },
+    { id:"ohm200k",  label:"200k",  group:"OHM", max:2e5,     desc:"Resistance up to 200 k"+OHM+"." },
+    { id:"ohm2m",    label:"2M",    group:"OHM", max:2e6,     desc:"Resistance up to 2 M"+OHM+"." },
+    { id:"dca20m",   label:"20m",   group:"DCA", max:0.02,  jack:"MA",  desc:"DC current up to 20 mA. Red lead in the mA jack, meter in series." },
+    { id:"dca200m",  label:"200m",  group:"DCA", max:0.2,   jack:"MA",  desc:"DC current up to 200 mA. Red lead in the mA jack, meter in series." },
+    { id:"dcv2",     label:"2",     group:"DCV", max:2,       desc:"DC volts up to 2 V, resolving 1 mV. The voltage-drop range on this meter." },
+    { id:"dcv20",    label:"20",    group:"DCV", max:20,      desc:"DC volts up to 20 V. The 12 V automotive range - the one you will use most." },
+    { id:"dcv200",   label:"200",   group:"DCV", max:200,     desc:"DC volts up to 200 V." },
+    { id:"dcv1000",  label:"1000",  group:"DCV", max:1000,    desc:"DC volts up to 1000 V. Start here on anything unknown." },
+    { id:"acv750",   label:"750",   group:"ACV", max:750,     desc:"AC volts up to 750 V. The meter's AC ceiling - use it for 240 V." },
+    { id:"acv200",   label:"200",   group:"ACV", max:200,     desc:"AC volts up to 200 V. The right range for a 120 V outlet." },
+    { id:"acv20",    label:"20",    group:"ACV", max:20,      desc:"AC volts up to 20 V." },
+    { id:"acv2",     label:"2",     group:"ACV", max:2,       desc:"AC volts up to 2 V." },
+    { id:"acv200m",  label:"200m",  group:"ACV", max:0.2,     desc:"AC volts up to 200 mV." },
+    { id:"dca10",    label:"10",    group:"DCA", max:10, jack:"A10", desc:"DC current up to 10 A. Red lead MUST move to the A jack. In series only." },
+    { id:"dwell4",   label:"4CYL",  group:"DWELL", desc:"Dwell angle, 4 cylinder. Points ignition only." },
+    { id:"dwell6",   label:"6CYL",  group:"DWELL", desc:"Dwell angle, 6 cylinder." },
+    { id:"dwell8",   label:"8CYL",  group:"DWELL", desc:"Dwell angle, 8 cylinder." },
+    { id:"rpm8",     label:"8CYL",  group:"RPM", desc:"Tachometer, 8 cylinder. Reading x 10 = engine RPM." },
+    { id:"rpm6",     label:"6CYL",  group:"RPM", desc:"Tachometer, 6 cylinder. Reading x 10 = engine RPM." },
+    { id:"rpm4",     label:"4CYL",  group:"RPM", desc:"Tachometer, 4 cylinder. Reading x 10 = engine RPM." }
+  ]
+};
+const GROUP_COLOR = {
+  DCV:"#7FD1F5", ACV:"#F5A97F", DCA:"#F57F8E",
+  OHM:"#B6F57F", DWELL:"#C9A0F5", RPM:"#9FB4F5", TEST:"#F5E27F"
+};
+
+/* ================================================================
+   SCENARIO LIBRARY - deterministic, works with no network at all.
+   s: good | warn | bad | neut  (severity dot on the expected row)
+   ================================================================ */
+const GROUPS = [
+  { id:"auto",  name:"Automotive / 12 V DC" },
+  { id:"house", name:"Household AC & appliances" },
+  { id:"bench", name:"Electronics bench / low-voltage DC" },
+  { id:"core",  name:"Core skills" }
+];
+
+const SCENARIOS = [
+/* ---------------------------------------------------------- AUTO */
+{
+  id:"batt-rest", subject:"car-rest", g:"auto", title:"Car battery: resting voltage",
+  dial:"dcv20", red:"VOHM", black:"COM", reading:"12.62", unit:"V DC",
+  why:"State of charge on a battery that has been sitting. The most useful single measurement this meter makes, and the right first move on any no-start.",
+  steps:[
+    "Engine off. If it was just running, wait an hour <em>or</em> switch the headlights on for 30 seconds and back off - that bleeds the surface charge that makes a tired battery look full.",
+    "Dial to <b>20</b> in the <b>DCV</b> block. 20 is the smallest range above 12 V, so you get two decimal places.",
+    "Black lead in <b>COM</b>, red lead in <b>V"+OHM+"\u21e5</b>.",
+    "Black probe on the negative post, red on the positive post - bare lead or bare metal, not painted clamp."
+  ],
+  expect:[
+    {v:"12.6 V or more", s:"good", m:"Fully charged."},
+    {v:"12.4 V",         s:"good", m:"Roughly 75%. Serviceable, not full."},
+    {v:"12.2 V",         s:"warn", m:"Roughly 50%. Charge it."},
+    {v:"12.0 V",         s:"warn", m:"Roughly 25%. Sulfation starts around here."},
+    {v:"11.8 V or less", s:"bad",  m:"Flat. There is essentially nothing left in it."},
+    {v:"-12.62",         s:"neut", m:"Leads are reversed. Harmless - the minus sign is the meter telling you which probe is on which post."}
+  ],
+  gotcha:"Resting voltage cannot tell you whether the battery still delivers cranking current. A failing battery often reads a perfect 12.6 V and collapses the instant the starter turns. Run the cranking test before you clear it."
+},
+{
+  id:"batt-crank", subject:"car-flat", g:"auto", title:"Car battery: cranking voltage",
+  dial:"dcv20", red:"VOHM", black:"COM", reading:"10.14", unit:"V DC",
+  why:"The test that catches a battery which reads fine at rest but cannot do the one job it has. This is a load test you can do with nothing but the meter.",
+  steps:[
+    "Same setup as resting voltage: <b>DCV 20</b>, red in <b>V"+OHM+"\u21e5</b>, black in <b>COM</b>.",
+    "Probes held firmly on the battery posts. Route the leads away from the belt, fan and exhaust before anyone turns the key.",
+    "Have someone crank the engine while you watch the display.",
+    "Read the <em>lowest</em> number it settles on during cranking, not the number after it starts."
+  ],
+  expect:[
+    {v:"9.6 V or higher", s:"good", m:"Holding up under load. Battery is fine."},
+    {v:"9.0 - 9.6 V",     s:"warn", m:"Marginal. Load-test it properly or plan on replacing it."},
+    {v:"under 9.0 V",     s:"bad",  m:"Failing under load, even if it rests at 12.6 V."},
+    {v:"drops near 0",    s:"bad",  m:"Open cell, or a connection opening up once real current flows."}
+  ],
+  gotcha:"9.6 V is the threshold at about 70"+"\u00B0"+"F. A cold battery legitimately sags further - the same good battery might only hold 9.0 V at 0"+"\u00B0"+"F."
+},
+{
+  id:"alternator", subject:"car-run", g:"auto", title:"Alternator charging output",
+  dial:"dcv20", red:"VOHM", black:"COM", reading:"14.21", unit:"V DC",
+  why:"Separates 'the battery is bad' from 'the battery is fine and nothing is refilling it'.",
+  steps:[
+    "<b>DCV 20</b>, red in <b>V"+OHM+"\u21e5</b>, black in <b>COM</b>.",
+    "Start the engine and let it idle. Keep the leads clear of the belt and fan.",
+    "Probes on the battery posts, same as the resting test.",
+    "Then switch on the headlights and blower and read it again under load."
+  ],
+  expect:[
+    {v:"13.8 - 14.6 V", s:"good", m:"Charging normally."},
+    {v:"13.0 - 13.5 V", s:"warn", m:"Undercharging. Suspect belt slip, a worn brush pack, or heavy load."},
+    {v:"about 12.6 V",  s:"bad",  m:"Not charging at all - you are just reading the battery."},
+    {v:"over 15.0 V",   s:"bad",  m:"Overcharging. Bad regulator. This boils electrolyte and cooks electronics - fix it now."}
+  ],
+  gotcha:"A reading that looks right at idle and sags under load still points at the alternator. Always take the second reading with the lights and blower on."
+},
+{
+  id:"parasitic", subject:"draw", g:"auto", title:"Parasitic draw: what kills the battery overnight",
+  dial:"dca10", red:"A10", black:"COM", reading:"0.028", unit:"A DC",
+  why:"Finds the circuit that stays awake after the car does. This is the one common job that uses the current jack.",
+  steps:[
+    "Engine off, key out, doors shut. Latch the door switch by hand or pull the dome-light fuse so the car actually goes to sleep.",
+    "Disconnect the <b>negative</b> battery cable from the post.",
+    "Move the red lead from <b>V"+OHM+"\u21e5</b> to the <b>10A</b> jack. Dial to <b>10A</b> in the <b>DCA</b> block.",
+    "Bridge the gap: one probe on the negative post, the other on the disconnected cable clamp. Current now flows through the meter.",
+    "Wait 20 - 45 minutes without opening a door. Modules have to time out before the reading means anything.",
+    "When you are done, move the red lead <em>back</em> to <b>V"+OHM+"\u21e5</b> before you do anything else."
+  ],
+  expect:[
+    {v:"under 50 mA (0.050)", s:"good", m:"Normal for most modern vehicles once asleep."},
+    {v:"50 - 100 mA",         s:"warn", m:"Borderline. Enough to flatten a weak battery over a week."},
+    {v:"over 100 mA",         s:"bad",  m:"Real draw. Pull fuses one at a time and watch for the number to drop."},
+    {v:"OL",                  s:"bad",  m:"Over 10 A. Reconnect the cable - something major is switched on and you are about to blow the meter fuse."}
+  ],
+  danger:"Never put the probes across the battery posts while the red lead is in the <b>10A</b> jack. That jack is a near-short by design - it is meant to sit <em>in</em> a circuit, not <em>across</em> a source. Doing it on a car battery blows the fuse instantly, with sparks. Leaving the lead in 10A and then measuring a voltage is the single most common way people destroy a multimeter."
+},
+{
+  id:"volt-drop", subject:"ground", g:"auto", title:"Voltage drop across a ground or connection",
+  dial:"dcv2", red:"VOHM", black:"COM", reading:"0.043", unit:"V DC",
+  why:"Continuity says a connection exists. Voltage drop says whether it can actually carry current. Corroded grounds pass a continuity test and still fail under load - this is the test that finds them.",
+  steps:[
+    "Dial to <b>2</b> in the <b>V</b> DC block - 2 V full scale, resolving down to 1 mV.",
+    "Red in <b>V"+OHM+"\u21e5</b>, black in <b>COM</b>.",
+    "Put the circuit <em>under load</em>: headlights on, or measure while cranking. An unloaded joint always looks perfect.",
+    "Probe across the joint itself - engine block to chassis, chassis to battery negative, both ends of a single cable."
+  ],
+  expect:[
+    {v:"under 0.10 V", s:"good", m:"Good connection."},
+    {v:"0.10 - 0.30 V", s:"warn", m:"Suspect. Clean and retighten it."},
+    {v:"0.30 - 0.50 V", s:"bad",  m:"Bad connection. This is your fault."},
+    {v:"over 0.50 V",   s:"bad",  m:"Badly corroded or nearly open. Definitely the fault."}
+  ],
+  gotcha:"You are measuring the <em>joint</em>, not to ground. Both probes go on either side of the thing you suspect - that is what makes this different from every other voltage measurement."
+},
+{
+  id:"fuse-in-place", subject:"open", g:"auto", title:"Check a blade fuse without pulling it",
+  dial:"dcv20", red:"VOHM", black:"COM", reading:"00.00", unit:"V DC",
+  why:"Every automotive blade fuse has two little exposed tabs on top. You can test it live, in the box, in about three seconds.",
+  steps:[
+    "<b>DCV 20</b>, red in <b>V"+OHM+"\u21e5</b>, black in <b>COM</b>.",
+    "Key on, so the circuit is actually powered - a fuse on a dead circuit tells you nothing.",
+    "Touch one probe to each of the two metal test tabs on top of the fuse. You are measuring <em>across</em> the fuse."
+  ],
+  expect:[
+    {v:"00.00 V across", s:"good", m:"Fuse is intact - both sides are at the same potential."},
+    {v:"about 12.6 V across", s:"bad", m:"Fuse is blown. All the voltage is dropping across the gap."},
+    {v:"00.00 V, but circuit dead", s:"neut", m:"Fuse is fine and the circuit is unpowered. Check upstream, or the key position."}
+  ],
+  gotcha:"Do this with <b>DCV</b>, never with continuity or ohms - those need the power OFF, and a powered circuit will give nonsense readings or damage the meter."
+},
+{
+  id:"relay-coil", subject:"coil", g:"auto", title:"Test a relay coil",
+  dial:"ohm200", red:"VOHM", black:"COM", reading:"85.4", unit:OHM,
+  why:"Splits a dead circuit into 'the relay is bad' or 'nothing is telling the relay to close'.",
+  steps:[
+    "Pull the relay out of its socket.",
+    "Dial to <b>200</b> in the "+OHM+" block. Red in <b>V"+OHM+"\u21e5</b>, black in <b>COM</b>.",
+    "Probe pins <b>85</b> and <b>86</b> - the coil pins, numbered on the relay body."
+  ],
+  expect:[
+    {v:"50 - 120 "+OHM,  s:"good", m:"Typical healthy coil for a 12 V automotive relay."},
+    {v:"OL",             s:"bad",  m:"Open coil. The relay is dead."},
+    {v:"under 10 "+OHM,  s:"bad",  m:"Shorted turns. Will draw too much and may take out the driver circuit."}
+  ],
+  gotcha:"Pins 30, 87 and 87a are the switched contacts, not the coil. Across 30 and 87 you should read OL at rest, and near 0 "+OHM+" only while the coil is energised."
+},
+/* --------------------------------------------------------- HOUSE */
+{
+  id:"outlet-live", subject:"outlet", g:"house", title:"Is this outlet live and wired correctly?",
+  dial:"acv200", red:"VOHM", black:"COM", reading:"121.4", unit:"V AC",
+  why:"Three measurements tell you whether an outlet is hot, whether its ground is real, and whether hot and neutral are swapped.",
+  steps:[
+    "Dial to <b>200</b> in the <b>V~</b> block. 200 is the smallest AC range above 120 V, so you get a decimal place.",
+    "Red in <b>V"+OHM+"\u21e5</b>, black in <b>COM</b>. Both leads stay in those jacks for every AC voltage test.",
+    "The <em>short</em> slot is hot. The <em>tall</em> slot is neutral. The round hole is ground.",
+    "Take three readings: hot to neutral, hot to ground, then neutral to ground."
+  ],
+  expect:[
+    {v:"H-N 110 - 125 V", s:"good", m:"Normal supply voltage."},
+    {v:"H-G 110 - 125 V", s:"good", m:"Ground is present and bonded."},
+    {v:"N-G 0 - 2 V",     s:"good", m:"Normal. A couple of volts here is ordinary drop, not a fault."},
+    {v:"H-G reads 0, H-N reads 120", s:"bad", m:"Open or missing ground. The outlet works and protects nothing."},
+    {v:"H-N 0, N-G 120",  s:"bad",  m:"Hot and neutral are reversed."},
+    {v:"about 240 V",     s:"bad",  m:"You are across two hot legs. Stop and reassess what you are probing."}
+  ],
+  danger:"This meter is <b>CAT III 600 V / CAT II 1000 V</b>. Branch circuits and outlets are inside that rating; the incoming service bus in a panel is not. Keep one hand in your pocket, keep your fingers behind the moulded barriers on the probes, and inspect the leads for nicks before every mains measurement."
+},
+{
+  id:"dryer-thermal-fuse", subject:"fuse-ok", g:"house", title:"Dryer thermal fuse",
+  dial:"ohm200", red:"VOHM", black:"COM", reading:"00.3", unit:OHM,
+  why:"A one-shot safety device on the blower housing or exhaust duct. When it opens, most dryers tumble but never heat - or do nothing at all.",
+  steps:[
+    "<b>Unplug the dryer at the wall.</b> Not the breaker - the plug, so you can see it is out.",
+    "Get to the thermal fuse: a small white or grey plastic body with two spade terminals, sitting on the blower housing or the exhaust duct.",
+    "Pull at least <em>one</em> wire off the fuse. Leave it connected and you are reading the whole circuit around it, not the fuse.",
+    "Dial to <b>200</b> in the "+OHM+" block. Red in <b>V"+OHM+"\u21e5</b>, black in <b>COM</b>.",
+    "Probe the two terminals. Polarity does not matter for resistance."
+  ],
+  expect:[
+    {v:"00.0 - 02.0 "+OHM, s:"good", m:"Fuse is intact. Your fault is elsewhere."},
+    {v:"OL",               s:"bad",  m:"Blown. Replace it - and find out why it blew."},
+    {v:"anything between", s:"warn", m:"Suspect. Re-probe with clean contact on bare metal before you trust it."}
+  ],
+  danger:"Unplugged means unplugged. A dryer's heating circuit is 240 V, and the terminals you are about to touch are part of it.",
+  gotcha:"A thermal fuse is one-shot and it blew for a reason - nearly always restricted airflow. Replacing it without clearing the vent duct and lint trap just blows the new one, usually within a load or two."
+},
+{
+  id:"dryer-element", subject:"element", g:"house", title:"Dryer heating element",
+  dial:"ohm200", red:"VOHM", black:"COM", reading:"11.2", unit:OHM,
+  why:"Tells you whether the element itself is open, and whether it has shorted to the housing.",
+  steps:[
+    "<b>Unplug the dryer.</b>",
+    "Disconnect the element's two terminals so you are reading only the element.",
+    "<b>"+OHM+" 200</b>, red in <b>V"+OHM+"\u21e5</b>, black in <b>COM</b>. Probe across the two terminals.",
+    "Then move one probe to bare metal on the element housing and read again - this is the short-to-ground check."
+  ],
+  expect:[
+    {v:"8 - 15 "+OHM+" across", s:"good", m:"Typical healthy element."},
+    {v:"OL across",             s:"bad",  m:"Open element. Replace it."},
+    {v:"under 5 "+OHM+" across", s:"bad", m:"Shorted turns. Replace it."},
+    {v:"OL terminal-to-case",   s:"good", m:"Correct - the element must be isolated from its housing."},
+    {v:"any reading terminal-to-case", s:"bad", m:"Shorted to ground. This is what trips breakers. Replace it."}
+  ],
+  gotcha:"The element resistance and the housing check are two different tests. An element can read a perfect 11 "+OHM+" across its terminals and still be shorted to the case."
+},
+{
+  id:"switch-continuity", subject:"wire", g:"house", title:"Door switch, thermostat, or any switch",
+  dial:"diode", red:"VOHM", black:"COM", reading:"000", unit:"beep",
+  why:"Any two-terminal switch, thermostat or thermal cutoff comes down to the same question: does it close when it should?",
+  steps:[
+    "<b>Power off and unplugged.</b> Continuity puts the meter's own small voltage into the circuit and needs it dead.",
+    "Isolate at least one side of the component.",
+    "Dial to the <b>continuity</b> position. Red in <b>V"+OHM+"\u21e5</b>, black in <b>COM</b>.",
+    "Touch the probes together first - it should beep. That proves the meter, the leads and your ears before you trust a silence.",
+    "Probe the two terminals, then actuate the switch (press the door plunger, warm the thermostat) and watch for the reading to change."
+  ],
+  expect:[
+    {v:"beep / near 000 when closed", s:"good", m:"Contacts are making."},
+    {v:"OL / silent when open",       s:"good", m:"Correct for a switch in its open state."},
+    {v:"never changes",               s:"bad",  m:"Stuck. Dead switch - replace it."},
+    {v:"intermittent while wiggling", s:"bad",  m:"Failing contacts. Replace it; this is the hardest kind of fault to chase later."}
+  ],
+  gotcha:"Touching the probes together to confirm the beep is not optional ceremony - a blown internal fuse or a broken lead reads OL on everything, which looks exactly like a dead component."
+},
+{
+  id:"dryer-outlet-240", subject:"dryer240", g:"house", title:"240 V dryer or range outlet",
+  dial:"acv750", red:"VOHM", black:"COM", reading:"241", unit:"V AC",
+  why:"Confirms both legs are present before you condemn an appliance. One dead leg is a classic 'tumbles but will not heat'.",
+  steps:[
+    "<b>V~ 200</b> - the meter's top AC range, and the only correct choice here. Red in <b>V"+OHM+"\u21e5</b>, black in <b>COM</b>.",
+    "Probe the two hot slots against each other first.",
+    "Then each hot to neutral, and each hot to ground.",
+    "Move deliberately. Hold one probe at a time where you can, and never let a probe tip bridge two slots."
+  ],
+  expect:[
+    {v:"Hot-Hot 208 - 250 V", s:"good", m:"Both legs present."},
+    {v:"Each Hot-N 110 - 125 V", s:"good", m:"Both legs healthy individually."},
+    {v:"One Hot-N reads 0",   s:"bad",  m:"Dead leg. Breaker half tripped, or a lost connection. Appliance is not at fault."},
+    {v:"Hot-Hot 0, both Hot-N 120", s:"bad", m:"Both slots are on the same leg - a miswired outlet."},
+    {v:"N-G 0 - 2 V",         s:"good", m:"Normal."}
+  ],
+  danger:"240 V across two legs will not let go of you the way 120 V might. One hand in your pocket, fingers well behind the probe barriers, and if the outlet is loose or scorched, kill the breaker and fix that first."
+},
+{
+  id:"verify-dead", subject:"dead", g:"house", title:"Prove a circuit is actually dead",
+  dial:"acv200", red:"VOHM", black:"COM", reading:"000.0", unit:"V AC",
+  why:"The most important measurement you will ever take, and the one people skip. A zero from a meter you have not verified is not a zero.",
+  steps:[
+    "<b>V~ 200</b>, red in <b>V"+OHM+"\u21e5</b>, black in <b>COM</b>.",
+    "<b>Prove</b> - test on a circuit you know is live. A working outlet nearby. Confirm the meter reads about 120 V.",
+    "<b>Test</b> - test the circuit you intend to work on. Confirm it reads 0.",
+    "<b>Prove again</b> - go back to the known-live circuit and confirm the meter still reads about 120 V.",
+    "Only now is the circuit dead."
+  ],
+  expect:[
+    {v:"000.0 V, meter proven both sides", s:"good", m:"Genuinely dead. Work on it."},
+    {v:"anything above 0",  s:"bad",  m:"Still live. Find the right breaker."},
+    {v:"0 on the known-live test", s:"bad", m:"Your meter, lead or fuse has failed. Every reading you took is worthless."}
+  ],
+  danger:"A meter with a blown fuse, a flat 9 V battery or a broken lead reads a confident 0.00 on a fully live circuit. Prove - test - prove is what makes the zero mean something."
+},
+/* --------------------------------------------------------- BENCH */
+{
+  id:"wall-wart", subject:"brick", g:"bench", title:"Wall adapter: output voltage and polarity",
+  dial:"dcv20", red:"VOHM", black:"COM", reading:"19.48", unit:"V DC",
+  why:"Before you plug an unknown brick into anything, confirm what it actually puts out and which way round. The ProBook's bent-pin barrel brick is exactly this job - expect about 19.5 V, centre positive.",
+  steps:[
+    "Plug the adapter into the wall with nothing connected to its output.",
+    "<b>DCV 20</b> if the label says 20 V or less. If the label is missing or says more, start at <b>V 1000</b> and work down.",
+    "Red in <b>V"+OHM+"\u21e5</b>, black in <b>COM</b>.",
+    "Red probe on the <em>centre pin</em> inside the barrel, black probe on the outer sleeve. A bare paperclip in the barrel makes this much easier than balancing a probe tip."
+  ],
+  expect:[
+    {v:"positive, near the label rating", s:"good", m:"Centre positive - the common convention. Good brick."},
+    {v:"negative, near the label rating", s:"warn", m:"Centre negative. Works fine, but polarity matters - match it to the device or you will damage something."},
+    {v:"00.00",             s:"bad",  m:"Dead brick, or a broken lead inside the cable. Flex the cable near both ends and re-read."},
+    {v:"5 - 15% above rating", s:"good", m:"Normal. An unloaded switching supply sits a little high; it settles under load."}
+  ],
+  gotcha:"Measure at the plug end, not the brick. A brick that reads 19.5 V at its case and 0 V at the tip has a broken cable - which is far more common than a failed supply."
+},
+{
+  id:"xbox-pwron", subject:"xbox", g:"bench", title:"Xbox brick: does the 12 V rail come up?",
+  dial:"dcv20", red:"VOHM", black:"COM", reading:"12.03", unit:"V DC",
+  why:"The single biggest unknown in the salvaged bench-supply build: forum consensus says the blue PWRON wire has to be pulled high before the 12 V rail turns on. This is the measurement that settles it.",
+  steps:[
+    "Cut the factory output cable a few inches from the brick housing. You never need to open the brick.",
+    "Strip and identify the four conductors: black/grey ground, yellow 12 V, red 5 V, blue PWRON.",
+    "<b>DCV 20</b>, red in <b>V"+OHM+"\u21e5</b>, black in <b>COM</b>. Nothing else connected.",
+    "Black probe on black/grey, red probe on yellow. Leave the blue PWRON wire floating.",
+    "If you read 0 V, tie blue PWRON to the red 5 V wire - both are low-current signal wires, so this is a safe experiment - and measure again."
+  ],
+  expect:[
+    {v:"about 12 V, PWRON floating", s:"good", m:"No enable signal needed. Go straight to wiring the buck stage."},
+    {v:"00.00 V, PWRON floating",    s:"neut", m:"Expected if the brick needs enabling. Tie PWRON to 5 V and re-measure."},
+    {v:"about 12 V after tying PWRON high", s:"good", m:"Confirms the forum account. Note it in the research file."},
+    {v:"still 0 V",                  s:"bad",  m:"Either the brick is dead or the pinout differs. Re-verify the wire colours before going further."}
+  ],
+  danger:"Never open the brick's own case. Its mains side rectifies wall AC to roughly 160 V DC and those capacitors can hold that charge after unplugging. Everything in this project lives downstream of the cut output cable, which is low-voltage and low-risk. Draw the line exactly there."
+},
+{
+  id:"cap-discharged", subject:"cap", g:"bench", title:"Confirm a big capacitor is discharged",
+  dial:"dcv1000", red:"VOHM", black:"COM", reading:"002", unit:"V DC",
+  why:"The gating check before your hands go anywhere near a power-supply board. A PSU bulk capacitor holds 170 - 400 V DC after the thing is unplugged.",
+  steps:[
+    "Unplug the equipment and let it sit.",
+    "Dial to <b>1000</b> in the <b>V</b> DC block - the <em>highest</em> DC range. Never start low on an unknown charge; that is how you flash a meter over.",
+    "Red in <b>V"+OHM+"\u21e5</b>, black in <b>COM</b>.",
+    "Probe across the capacitor's two terminals, one hand only, and watch the number.",
+    "Once it reads near zero and stays there, you can work. Re-check after any time away from the bench."
+  ],
+  expect:[
+    {v:"under 5 V",     s:"good", m:"Safe to handle."},
+    {v:"5 - 50 V",      s:"warn", m:"Will still bite. Wait, or bleed it through a suitable resistor."},
+    {v:"50 - 170 V",    s:"bad",  m:"Dangerous. Do not touch the board."},
+    {v:"170 - 400 V",   s:"bad",  m:"Fully charged bulk capacitor. This is the one that hurts people. Bleed it properly."},
+    {v:"falls slowly as you watch", s:"neut", m:"Normal - the bleeder resistor is doing its job. Wait it out."}
+  ],
+  danger:"A missing or failed bleeder resistor means the charge simply stays there, for hours. Assume every large capacitor on a mains-side board is charged until this meter says otherwise, and never bridge one with a bare screwdriver - that welds the tip and can rupture the can."
+},
+{
+  id:"diode-test", subject:"diode-f", g:"bench", title:"Test a diode",
+  dial:"diode", red:"VOHM", black:"COM", reading:"0.573", unit:"V",
+  why:"The diode position does not measure resistance - it pushes a small current through and shows you the forward voltage drop. That number identifies the part as well as testing it.",
+  steps:[
+    "Component out of circuit, or with at least one leg lifted. Power off.",
+    "Dial to the <b>diode</b> position. Red in <b>V"+OHM+"\u21e5</b>, black in <b>COM</b>.",
+    "Red probe on the anode, black on the cathode - the banded end. That is the forward direction.",
+    "Then swap the probes and read again."
+  ],
+  expect:[
+    {v:"0.5 - 0.7 V forward, OL reverse", s:"good", m:"Healthy silicon diode."},
+    {v:"0.15 - 0.45 V forward, OL reverse", s:"good", m:"Healthy Schottky. The low drop is the point of the part."},
+    {v:"1.5 - 3.5 V forward",             s:"good", m:"An LED. It may even glow faintly while you test it."},
+    {v:"OL both directions",              s:"bad",  m:"Open. Dead diode."},
+    {v:"near 0 both directions",          s:"bad",  m:"Shorted. Dead diode - and check what it took out with it."}
+  ],
+  gotcha:"In circuit, parallel paths will fake a bad reading. A diode that measures shorted on the board is very often fine once you lift one leg."
+},
+{
+  id:"find-broken-wire", subject:"wire-bad", g:"bench", title:"Find a broken wire",
+  dial:"diode", red:"VOHM", black:"COM", reading:"000", unit:"beep",
+  why:"Continuity is a yes/no question asked very fast. It is the right tool for tracing conductors, confirming a crimp, and identifying which wire in a bundle is which.",
+  steps:[
+    "<b>Power off.</b> Disconnect at least one end of the wire you are testing.",
+    "Dial to <b>continuity</b>. Red in <b>V"+OHM+"\u21e5</b>, black in <b>COM</b>.",
+    "Touch the probes together to confirm it beeps.",
+    "Probe both ends of the conductor. For a long run, clip one lead and walk the other.",
+    "Flex and wiggle the cable near the connectors while you listen."
+  ],
+  expect:[
+    {v:"beep, steady",         s:"good", m:"Conductor is continuous."},
+    {v:"silent / OL",          s:"bad",  m:"Broken, or you are not on the pin you think you are."},
+    {v:"cuts out while flexing", s:"bad", m:"Intermittent break, usually right where the cable enters a connector or strain relief."},
+    {v:"beeps between two wires that should be separate", s:"bad", m:"Short between conductors. Chased down, this is often chafe against a bracket."}
+  ],
+  gotcha:"Continuity beeps on anything under roughly 30 - 50 "+OHM+". That means a partly corroded joint or a long thin wire can beep happily and still be a bad connection. When it matters, switch to "+OHM+" 200 and read the actual number."
+},
+{
+  id:"measure-resistor", subject:"r10k", g:"bench", title:"Measure a resistor",
+  dial:"ohm20k", red:"VOHM", black:"COM", reading:"9.87", unit:"k"+OHM,
+  why:"Confirms a colour code you cannot read, and confirms a part before you solder it in. Also the cleanest way to learn manual ranging.",
+  steps:[
+    "Component out of circuit, or with one leg lifted.",
+    "Red in <b>V"+OHM+"\u21e5</b>, black in <b>COM</b>.",
+    "Start at a high "+OHM+" range and step down until the display gives you decimal places. Reading 010 on the 200k range and 9.87 on the 20k range are the same resistor - the second one is useful.",
+    "Do not pinch both leads between bare fingers on high-value parts. Your body is a resistor in parallel and it will drag the reading down."
+  ],
+  expect:[
+    {v:"within the part's tolerance", s:"good", m:"5% band means a 10k can legitimately read 9.5k - 10.5k."},
+    {v:"OL on every range",           s:"bad",  m:"Open resistor, or a probe is not making contact."},
+    {v:"reads 0 on all ranges",       s:"bad",  m:"Shorted, or your probes are touching."},
+    {v:"drifts while you hold it",    s:"neut", m:"Your fingers. Hold the part by one lead, or use clips."}
+  ],
+  gotcha:"You cannot measure resistance in a powered circuit. It gives wrong numbers at best and damages the meter at worst. Ohms and continuity are always power-off measurements."
+},
+
+/* ---------------------------------------------------------- CORE */
+{
+  id:"dcv-vs-acv", subject:"car-rest", g:"core", title:"DCV or ACV - which one do I want?",
+  dial:"dcv20", red:"VOHM", black:"COM", reading:"12.62", unit:"V DC",
+  why:"Picking the wrong one of these gives you a confidently wrong number rather than an obvious error, which is why it is worth getting straight first.",
+  steps:[
+    "<b>DCV</b> is for anything running off a battery or a power supply. Cars, USB, wall adapters, electronics, solar panels. The voltage sits at one level and stays there.",
+    "<b>ACV</b> is for anything fed from the wall. Outlets, appliances, house wiring, generators. The voltage swings back and forth 60 times a second.",
+    "If you can trace it back to a battery or a brick, it is DC. If you can trace it back to a breaker panel, it is AC.",
+    "Getting it wrong is not dangerous to you, but it lies: DC measured on ACV usually reads near 0, and AC measured on DCV wanders around near 0 as well. A suspiciously small number is often the wrong function, not a dead circuit."
+  ],
+  expect:[
+    {v:"12 V car battery",       s:"neut", m:"DCV 20"},
+    {v:"120 V wall outlet",      s:"neut", m:"ACV 600"},
+    {v:"240 V dryer outlet",     s:"neut", m:"ACV 600"},
+    {v:"19 V laptop brick",      s:"neut", m:"DCV 20"},
+    {v:"1.5 V AA cell",          s:"neut", m:"DCV 2000m, or the BATT position"},
+    {v:"anything unknown",       s:"neut", m:"Start at DCV 600 or ACV 600 and work down"}
+  ]
+},
+{
+  id:"manual-ranging", subject:"car-rest", g:"core", title:"Manual ranging: what those numbers mean",
+  dial:"dcv20", red:"VOHM", black:"COM", reading:"12.62", unit:"V DC",
+  why:"This meter does not pick its own range. The number on the dial is the <em>maximum</em> that position can read - not a target, and not what you expect to see.",
+  steps:[
+    "Choose the smallest range that is still <em>above</em> what you expect. For a 12 V battery that is the <b>20</b> position: 20 is the first DCV range bigger than 12.",
+    "Too high a range costs you resolution. A 12.62 V battery on the <b>1000</b> range reads <b>013</b> - technically true, practically useless.",
+    "Too low a range shows <b>OL</b> or a lone <b>1</b> on the left. Nothing is broken; the meter is telling you to go up.",
+    "Unknown voltage? Start at the top - <b>1000</b> - and step down until you get decimals. That order is a habit worth building, because starting low on something unexpectedly high is how meters get hurt.",
+    "The <b>m</b> suffix means milli, one thousandth. <b>2000m</b> is 2 V full scale. <b>k</b> means thousand, <b>M</b> means million, on the "+OHM+" ranges."
+  ],
+  expect:[
+    {v:"OL, or a lone 1",   s:"warn", m:"Over range. Move up one position."},
+    {v:"013",               s:"warn", m:"Ranged too high. Move down for decimal places."},
+    {v:"12.62",             s:"good", m:"Correctly ranged - the reading uses most of the display."},
+    {v:"0.000",             s:"neut", m:"Either genuinely zero, or the wrong function entirely. Check DCV against ACV."}
+  ],
+  gotcha:"An autoranging meter does this for you and shows the unit on screen. Yours does not, so the dial position <em>is</em> the unit - and if you forget which position you are on, the number on the display means nothing."
+},
+{
+  id:"current-is-different", subject:"draw", g:"core", title:"Why current is the one that bites",
+  dial:"dca10", red:"A10", black:"COM", reading:"0.028", unit:"A DC",
+  why:"Volts, ohms, continuity and diode all measure <em>across</em> something. Current is the only measurement where the meter has to become part of the circuit - and it is the only setup that can destroy the meter in a second.",
+  steps:[
+    "Voltage and resistance go <b>in parallel</b>: touch two points, read the difference. The meter has very high internal resistance, so it barely disturbs anything.",
+    "Current goes <b>in series</b>: you must <em>break</em> the circuit and insert the meter into the gap so all the current flows through it.",
+    "In the current ranges the meter is deliberately a near-short - almost zero resistance. That is what makes it safe in series and catastrophic in parallel.",
+    "Move the red lead to <b>10A</b> for anything above 200 mA, and back to <b>V"+OHM+"\u21e5</b> the moment you finish.",
+    "Both current inputs on this meter are separately fused - 10 A on the <b>A</b> jack and 200 mA on the <b>mA</b> jack. That fuse is the only thing between a mistake and a much worse day - do not replace it with a bigger one."
+  ],
+  expect:[
+    {v:"Leads in 10A, probes across a battery", s:"bad", m:"A dead short through the meter. Blown fuse, sparks, possibly a ruined meter. The classic mistake."},
+    {v:"Leads in 10A, meter in series",  s:"good", m:"Correct. This is what the jack is for."},
+    {v:"Leads left in 10A, then you measure a voltage", s:"bad", m:"Same short, and the most common version of it - because you forgot to move the lead back."},
+    {v:"Reads 0.000 in series",          s:"neut", m:"Either no current is flowing, or the meter's current fuse is already blown. Test the fuse on continuity."}
+  ],
+  danger:"If you only remember one rule from this whole page: <b>never put the probes across a voltage source while a lead is in the 10A jack.</b> Make moving the red lead back to <b>V"+OHM+"\u21e5</b> the last step of every current measurement."
+},
+{
+  id:"reading-display", subject:"car-rest", g:"core", title:"Reading the display",
+  dial:"dcv20", red:"VOHM", black:"COM", reading:"-12.62", unit:"V DC",
+  why:"Four things show up on that screen that are not just a number, and each one means something specific.",
+  steps:[
+    "<b>OL</b>, or a lone <b>1</b> at the left with nothing after it, means over range. Not an error - move the dial up one position.",
+    "A <b>minus sign</b> means your probes are the other way round from what you assumed. Harmless, and often informative: it tells you which point is more positive.",
+    "<b>Digits with no decimal point</b> mean you are ranged too high and losing resolution. Move down.",
+    "A <b>slowly drifting number with nothing connected</b> is normal. Open probes pick up stray fields; it is not a fault.",
+    "<b>The unit is not on the screen.</b> The dial position is the unit. 12.62 on DCV 20 is volts; 12.62 on "+OHM+" 20k is 12.62 kilohms."
+  ],
+  expect:[
+    {v:"OL",       s:"neut", m:"Over range, or an open circuit - which is the correct answer on continuity and ohms."},
+    {v:"-12.62",   s:"neut", m:"Right magnitude, probes reversed."},
+    {v:"013",      s:"warn", m:"Ranged too high."},
+    {v:"drifting",  s:"neut", m:"Open leads. Normal."},
+    {v:"000 that will not change", s:"warn", m:"Suspect the function, the fuse, or a lead - not the circuit. Prove the meter on something known live."}
+  ]
+},
+{
+  id:"the-jacks", subject:"car-rest", g:"core", title:"The three jacks",
+  dial:"dcv20", red:"VOHM", black:"COM", reading:"12.62", unit:"V DC",
+  why:"You already have the black lead right. There are only two decisions left, and one of them only comes up when you measure current.",
+  steps:[
+    "<b>COM</b> - black lead, always, every single measurement. It is the reference point the meter measures everything against.",
+    "<b>V"+OHM+"\u21e5</b> - red lead for volts, ohms, continuity, diode, and small currents. This is where the red lead lives roughly 95% of the time.",
+    "<b>10A</b> - red lead <em>only</em> for currents above 200 mA, with the dial in the matching 10A position and the meter wired in series.",
+    "The habit that saves meters: move the red lead back to <b>V"+OHM+"\u21e5</b> as the final step of any current measurement, before you set the meter down."
+  ],
+  expect:[
+    {v:"Black anywhere but COM", s:"bad",  m:"There is no reason to do this. Black lives in COM."},
+    {v:"Red in V"+OHM+"\u21e5",      s:"good", m:"Correct for volts, ohms, continuity, diode, small current."},
+    {v:"Red in 10A + dial on 10A + in series", s:"good", m:"Correct for high current."},
+    {v:"Red in 10A + dial on volts", s:"bad", m:"Dangerous. Move the lead before you probe anything."}
+  ],
+  gotcha:"Both current inputs on this meter are fused, which is a real safety feature and not a given at this price. It is also the reason a meter that suddenly reads 0.000 on current is usually a blown fuse, not a dead circuit."
+}
+];
+
+/* ================================================================
+   Seven-segment LCD. Inactive segments are drawn faintly, the way
+   a real LCD shows its unlit ghosts.
+   ================================================================ */
+const SEGMAP = {
+  "0":"abcdef","1":"bc","2":"abged","3":"abgcd","4":"fgbc","5":"afgcd",
+  "6":"afgedc","7":"abc","8":"abcdefg","9":"abcfgd",
+  "-":"g","O":"abcdef","L":"fed"," ":""
+};
+const DW = 40, DH = 70, DT = 8, DGAP = 12;
+
+function segPoly(which){
+  const t = DT, w = DW, h = DH, m = h/2;
+  const hBar = y => `${t/2},${y} ${t},${y-t/2} ${w-t},${y-t/2} ${w-t/2},${y} ${w-t},${y+t/2} ${t},${y+t/2}`;
+  const vBar = (x,y0,y1) => `${x},${y0+t/2} ${x+t/2},${y0+t} ${x+t/2},${y1-t} ${x},${y1-t/2} ${x-t/2},${y1-t} ${x-t/2},${y0+t}`;
+  switch(which){
+    case "a": return hBar(t/2);
+    case "g": return hBar(m);
+    case "d": return hBar(h-t/2);
+    case "f": return vBar(t/2, t/2, m);
+    case "b": return vBar(w-t/2, t/2, m);
+    case "e": return vBar(t/2, m, h-t/2);
+    case "c": return vBar(w-t/2, m, h-t/2);
+  }
+  return "";
+}
+const SEGS = ["a","b","c","d","e","f","g"];
+
+/* Parse "12.62" / "OL" / "-0.05" into cells, decimals ride on the cell before. */
+function lcdCells(str){
+  const cells = [];
+  for (const ch of String(str)){
+    if (ch === "." || ch === ","){ if (cells.length) cells[cells.length-1].dp = true; continue; }
+    cells.push({ ch: ch.toUpperCase(), dp:false });
+  }
+  return cells;
+}
+function renderLcd(str, unit){
+  const cells = lcdCells(str);
+  const totalW = cells.length * DW + Math.max(0, cells.length-1) * DGAP;
+  const rightEdge = 302;                       // inside the LCD bezel
+  let x = rightEdge - totalW;
+  let out = "";
+  for (const cell of cells){
+    const on = SEGMAP[cell.ch] || "";
+    out += `<g transform="translate(${x},116)">`;
+    for (const s of SEGS){
+      const cls = on.includes(s) ? "seg" : "seg off";
+      out += `<polygon class="${cls}" points="${segPoly(s)}"></polygon>`;
+    }
+    if (cell.dp) out += `<circle class="seg" cx="${DW+DGAP/2-1}" cy="${DH-DT/2}" r="${DT/2}"></circle>`;
+    out += `</g>`;
+    x += DW + DGAP;
+  }
+  out += `<text x="${rightEdge+8}" y="234" class="lcd-unit">${esc(unit||"")}</text>`;
+  return out;
+}
+
+function esc(s){
+  return String(s == null ? "" : s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+/* ================================================================
+   Meter artwork - generated entirely from METER, so swapping the
+   spec redraws the instrument.
+   ================================================================ */
+/* ================================================================
+   Geometry, traced from the Menards product shot.
+   24 positions, 15 degrees apart, diode at 1 o'clock. That lands
+   1000 / 200 / 20 across the bottom exactly as the real face reads.
+   ================================================================ */
+const CX = 190, CY = 480, R_LABEL = 128, R_TICK = 116, R_KNOB = 70;
+const JACK_Y = 668, ANG0 = 30;
+const STEP = 360 / METER.dial.length;
+const angleOf = id => {
+  const i = METER.dial.findIndex(d => d.id === id);
+  return i < 0 ? ANG0 : ANG0 + i * STEP;
+};
+const px = (a, r) => [CX + r * Math.sin(a * Math.PI/180), CY - r * Math.cos(a * Math.PI/180)];
+
+function buildMeter(){
+  const svg = document.getElementById("meter");
+  svg.setAttribute("viewBox", "0 0 380 800");
+  let s = `<title id="meterttl">Performance Tool W2972 multimeter. Click the dial, the jacks, or the power and hold buttons to work it.</title>
+  <defs>
+    <linearGradient id="gLime" x1="0" y1="0" x2=".3" y2="1">
+      <stop offset="0" stop-color="#CBE04A"/><stop offset="1" stop-color="#9DB824"/>
+    </linearGradient>
+    <linearGradient id="gKnob" x1="0" y1="0" x2=".4" y2="1">
+      <stop offset="0" stop-color="#4A4E55"/><stop offset=".5" stop-color="#1E2126"/><stop offset="1" stop-color="#0C0D10"/>
+    </linearGradient>
+    <linearGradient id="gLcd" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--lcd-bg)"/><stop offset="1" stop-color="#96A588"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="12" y="330" width="14" height="104" rx="7" fill="#5A6068"/>
+  <rect x="354" y="330" width="14" height="104" rx="7" fill="#5A6068"/>
+  <rect x="6" y="6" width="368" height="756" rx="48" fill="url(#gLime)"/>
+  <rect x="6" y="6" width="368" height="756" rx="48" fill="none" stroke="rgba(0,0,0,.28)" stroke-width="2"/>
+  <rect x="34" y="28" width="312" height="702" rx="24" fill="#17181B"/>
+  <text x="${CX}" y="72" text-anchor="middle" class="pt-logo">PT</text>
+
+  <rect x="52" y="86" width="276" height="176" rx="7" fill="#0E0F11"/>
+  <rect x="58" y="92" width="264" height="164" rx="4" fill="url(#gLcd)"/>
+  <g id="lcd"></g>
+  <text x="72" y="243" class="lcd-badge">${esc(METER.cat)}</text>
+
+  <text x="86" y="300" text-anchor="middle" class="btn-label">POWER</text>
+  <text x="294" y="300" text-anchor="middle" class="btn-label">HOLD</text>
+  <g id="btnPower" class="hit"><circle cx="86" cy="326" r="18" fill="#E0A81A" stroke="#8A6606" stroke-width="2"/>
+    <path d="M86,316 v10" stroke="#5C4404" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <path d="M79,318 a9.5,9.5 0 1,0 14,0" stroke="#5C4404" stroke-width="2.5" fill="none" stroke-linecap="round"/></g>
+  <g id="btnHold" class="hit"><circle cx="294" cy="326" r="18" fill="#3B5BC4" stroke="#22376F" stroke-width="2"/></g>
+
+  <circle cx="${CX}" cy="${CY}" r="162" fill="#0E0F11" opacity=".5"/>
+  <g id="dialLabels"></g>
+  <g id="knob" class="knob-grp">
+    <circle cx="${CX}" cy="${CY}" r="${R_KNOB}" fill="url(#gKnob)" stroke="#000" stroke-width="1.5"/>
+    <rect x="${CX-9}" y="${CY-R_KNOB+6}" width="18" height="${R_KNOB+24}" rx="9" fill="#101216"/>
+    <polygon points="${CX-8},${CY-R_KNOB+16} ${CX+8},${CY-R_KNOB+16} ${CX},${CY-R_KNOB+2}" fill="#E8EAEE"/>
+    <circle cx="${CX}" cy="${CY}" r="20" fill="#2A2E34"/>
+  </g>
+
+  <g id="leads"></g>
+  <g id="jacks"></g>
+  <text x="114" y="716" text-anchor="middle" class="jack-sub">10A MAX FUSED</text>
+  <text x="228" y="716" text-anchor="middle" class="jack-sub">200mA MAX FUSED</text>
+  <text x="316" y="716" text-anchor="middle" class="jack-sub">CAT III 600V</text>`;
+  svg.innerHTML = s;
+
+  // dial face - labels stay upright, the way the real face is printed
+  let l = "";
+  METER.dial.forEach((d, i) => {
+    const a = ANG0 + i * STEP;
+    const [lx, ly] = px(a, R_LABEL);
+    const [t1x, t1y] = px(a, R_TICK), [t2x, t2y] = px(a, R_TICK - 11);
+    l += `<line x1="${t1x.toFixed(1)}" y1="${t1y.toFixed(1)}" x2="${t2x.toFixed(1)}" y2="${t2y.toFixed(1)}"
+            class="tick" data-tick="${d.id}" stroke="${GROUP_COLOR[d.group]||"#999"}" stroke-width="2.4" stroke-linecap="round"/>`;
+    l += `<g class="hit" data-pos="${d.id}"><circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="13" fill="transparent"/>
+      <text x="${lx.toFixed(1)}" y="${(ly+3).toFixed(1)}" text-anchor="middle" class="dial-label" data-lab="${d.id}"
+        font-size="${d.label.length > 4 ? 8 : 9.2}">${esc(d.label)}</text></g>`;
+  });
+  // group names printed outside the ring
+  const NAME = { DCV:"V", ACV:"V~", DCA:"A", OHM:OHM, DWELL:"DWELL", RPM:"RPMX10", TEST:"" };
+  let run = [];
+  const flushRun = () => {
+    if (!run.length) return;
+    const g = METER.dial[run[0]].group;
+    if (NAME[g]){
+      const a = ANG0 + (run.reduce((x,y)=>x+y,0) / run.length) * STEP;
+      const [gx, gy] = px(a, 156);
+      l += `<text x="${gx.toFixed(1)}" y="${(gy+4).toFixed(1)}" text-anchor="middle" class="arc-label">${esc(NAME[g])}</text>`;
+    }
+    run = [];
+  };
+  METER.dial.forEach((d, i) => {
+    if (run.length && METER.dial[run[0]].group !== d.group) flushRun();
+    run.push(i);
+  });
+  flushRun();
+  document.getElementById("dialLabels").innerHTML = l;
+
+  document.getElementById("jacks").innerHTML = METER.jacks.map(j => `
+    <g class="hit" data-jack="${j.id}">
+      <circle class="jack-ring" data-ring="${j.id}" cx="${JACK_X[j.id]}" cy="${JACK_Y}" r="29"
+              fill="rgba(242,183,5,.16)" stroke="var(--accent-bright)" stroke-width="5"/>
+      <circle cx="${JACK_X[j.id]}" cy="${JACK_Y}" r="19" fill="#0B0C0E" stroke="#3A3D42" stroke-width="2"/>
+      <circle cx="${JACK_X[j.id]}" cy="${JACK_Y}" r="9" fill="#000"/>
+      <text x="${JACK_X[j.id]}" y="${JACK_Y-40}" text-anchor="middle" class="jack-label">${esc(j.label)}</text>
+    </g>`).join("");
+
+  svg.addEventListener("click", onMeterClick);
+}
+const JACK_X = { A10:76, MA:152, COM:228, VOHM:304 };
+
+function leadPath(x, toX){
+  return `M ${x},${JACK_Y} C ${x},${JACK_Y+40} ${toX},${JACK_Y+36} ${toX},${JACK_Y+126}`;
+}
+function drawLeads(redJack, blackJack){
+  const jx = id => JACK_X[id] != null ? JACK_X[id] : JACK_X.COM;
+  document.getElementById("leads").innerHTML = `
+    <path class="lead" d="${leadPath(jx(blackJack), 60)}" fill="none" stroke="#0D0E10" stroke-width="10" stroke-linecap="round"/>
+    <path class="lead" d="${leadPath(jx(blackJack), 60)}" fill="none" stroke="#31353B" stroke-width="4.5" stroke-linecap="round"/>
+    <path class="lead" d="${leadPath(jx(redJack), 322)}" fill="none" stroke="#7E1A13" stroke-width="10" stroke-linecap="round"/>
+    <path class="lead" d="${leadPath(jx(redJack), 322)}" fill="none" stroke="#D0362A" stroke-width="4.5" stroke-linecap="round"/>`;
+}
+
+
+/* ================================================================
+   THE SIMULATOR
+   Given what you are probing and how the meter is actually set,
+   work out what the display really shows - including the wrong
+   answers. Getting it wrong here is the point.
+   ================================================================ */
+const SUBJECTS = [
+  { id:"open",     name:"Nothing (probes in the air)", kind:"open" },
+  { id:"car-rest", name:"Car battery, engine off",     kind:"dc", v:12.62 },
+  { id:"car-run",  name:"Car battery, engine running", kind:"dc", v:14.21 },
+  { id:"car-flat", name:"Car battery, flat",           kind:"dc", v:11.62 },
+  { id:"aa",       name:"AA cell",                     kind:"dc", v:1.583 },
+  { id:"9v",       name:"9 V battery",                 kind:"dc", v:9.34 },
+  { id:"brick",    name:"19 V laptop brick",           kind:"dc", v:19.48 },
+  { id:"ground",   name:"Corroded ground strap, loaded", kind:"dc", v:0.412 },
+  { id:"outlet",   name:"120 V wall outlet",           kind:"ac", v:121.4 },
+  { id:"dryer240", name:"240 V dryer outlet",          kind:"ac", v:241.3 },
+  { id:"dead",     name:"Circuit you think is dead",   kind:"ac", v:0 },
+  { id:"r10k",     name:"10 k resistor",               kind:"r",  r:9870 },
+  { id:"element",  name:"Dryer heating element",       kind:"r",  r:11.2 },
+  { id:"fuse-ok",  name:"Thermal fuse, good",          kind:"r",  r:0.3 },
+  { id:"fuse-bad", name:"Thermal fuse, blown",         kind:"r",  r:Infinity },
+  { id:"wire",     name:"Wire, intact",                kind:"r",  r:0.1 },
+  { id:"wire-bad", name:"Wire, broken",                kind:"r",  r:Infinity },
+  { id:"coil",     name:"Relay coil",                  kind:"r",  r:85.4 },
+  { id:"diode-f",  name:"Silicon diode, forward",      kind:"diode", vf:0.573 },
+  { id:"diode-r",  name:"Silicon diode, reversed",     kind:"diode", vf:Infinity },
+  { id:"draw",     name:"Parasitic draw, in series",   kind:"i", a:0.028 },
+  { id:"led",      name:"LED strip, in series",        kind:"i", a:0.42 },
+  { id:"xbox",     name:"Xbox brick 12 V rail",        kind:"dc", v:12.03 },
+  { id:"cap",      name:"PSU capacitor, discharged",   kind:"dc", v:2.1 },
+  { id:"cap-hot",  name:"PSU capacitor, still charged", kind:"dc", v:317 }
+];
+
+const bench = { subject:"car-rest", dial:"dcv20", red:"VOHM", black:"COM", power:true, hold:false, held:null, fuseA:true, fuseMA:true };
+
+function pad(n, width){ let t = String(Math.abs(n)); while (t.length < width) t = "0" + t; return (n < 0 ? "-" : "") + t; }
+
+/* 2000-count, 3.5 digit, formatted the way each range actually reads */
+function formatRange(d, value){
+  const m = d.max;
+  if (d.group === "OHM"){
+    if (m <= 200)  return { t: value.toFixed(1), u: OHM };
+    if (m <= 2e3)  return { t: (value/1e3).toFixed(3), u: "k"+OHM };
+    if (m <= 2e4)  return { t: (value/1e3).toFixed(2), u: "k"+OHM };
+    if (m <= 2e5)  return { t: (value/1e3).toFixed(1), u: "k"+OHM };
+    return { t: (value/1e6).toFixed(3), u: "M"+OHM };
+  }
+  if (d.group === "DCA"){
+    if (m <= 0.02) return { t: (value*1e3).toFixed(2), u:"mA" };
+    if (m <= 0.2)  return { t: (value*1e3).toFixed(1), u:"mA" };
+    return { t: value.toFixed(2), u:"A" };
+  }
+  const unit = d.group === "ACV" ? "V AC" : "V DC";
+  if (m <= 0.2) return { t: (value*1e3).toFixed(1), u:"mV" + (d.group === "ACV" ? " AC" : " DC") };
+  if (m <= 2)   return { t: value.toFixed(3), u:unit };
+  if (m <= 20)  return { t: value.toFixed(2), u:unit };
+  if (m <= 200) return { t: value.toFixed(1), u:unit };
+  return { t: pad(Math.round(value), 4), u:unit };
+}
+
+function simulate(st){
+  const d = dialById(st.dial), sub = SUBJECTS.find(x => x.id === st.subject) || SUBJECTS[0];
+  const out = { reading:"", unit:"", verdict:"", tone:"neut", blows:null };
+  if (!st.power) return { ...out, reading:"", unit:"", verdict:"Meter is off. Press POWER.", tone:"neut", off:true };
+  if (st.black !== "COM") out.warn = "Black lead is not in COM. It belongs there for every measurement.";
+
+  const G = d.group;
+
+  if (G === "RPM" || G === "DWELL"){
+    return { ...out, reading:"---", unit:G === "RPM" ? "x10" : "deg",
+      verdict:"Needs the engine running with the inductive pickup clipped round a plug wire. Nothing to read from the probes alone.", tone:"neut" };
+  }
+
+  if (G === "DCA"){
+    const wantJack = d.jack;                       // A10 for the 10 range, MA for 20m/200m
+    const fuseOk = wantJack === "A10" ? st.fuseA : st.fuseMA;
+    if (st.red !== wantJack){
+      return { ...out, reading:"0.00", unit:"",
+        verdict:`No current path - the red lead is in ${jackById(st.red).label}, but this range reads through the ${jackById(wantJack).label} jack.`, tone:"warn" };
+    }
+    if (sub.kind === "dc" || sub.kind === "ac"){
+      return { ...out, reading:"0.00", unit:"", blows:wantJack, tone:"bad",
+        verdict:"SHORT CIRCUIT. You put a current range straight across a voltage source. On the real meter that is a bang, a spark and a blown fuse." };
+    }
+    if (!fuseOk) return { ...out, reading:"0.00", unit:"", tone:"bad",
+      verdict:`The ${jackById(wantJack).label} fuse is blown. Current reads zero no matter what - which looks exactly like a dead circuit.` };
+    if (sub.kind !== "i") return { ...out, reading:"0.00", unit:"", tone:"neut",
+      verdict:"Nothing flowing. Current only reads when the meter is wired in series and the circuit is complete." };
+    if (sub.a > d.max) return { ...out, reading:"OL", unit:"", tone:"bad",
+      verdict:`Over range - more than ${d.label === "10" ? "10 A" : d.label + "A"}. Move up, or you will blow the fuse.` };
+    const f = formatRange(d, sub.a);
+    return { ...out, reading:f.t, unit:f.u, tone:"good", verdict:"Measuring in series. Move the red lead back when you finish." };
+  }
+
+  if (G === "OHM" || G === "TEST"){
+    if (sub.kind === "dc" || (sub.kind === "ac" && sub.v > 0)){
+      return { ...out, reading:"OL", unit:"", tone:"bad",
+        verdict:"Never measure resistance or continuity on a live circuit. The number is meaningless and you can damage the meter." };
+    }
+    if (G === "TEST"){
+      if (sub.kind === "diode") return sub.vf === Infinity
+        ? { ...out, reading:"OL", unit:"", tone:"good", verdict:"Reverse direction - no conduction. Correct for a healthy diode." }
+        : { ...out, reading:sub.vf.toFixed(3), unit:"V", tone:"good", verdict:"Forward voltage drop. 0.5 - 0.7 V is a healthy silicon diode." };
+      if (sub.kind === "r"){
+        if (sub.r < 30) return { ...out, reading:sub.r.toFixed(1), unit:"BEEP", tone:"good", beep:true, verdict:"Continuous - the buzzer sounds under roughly 30 ohms." };
+        return { ...out, reading:"OL", unit:"", tone:"bad", verdict:"Open. No continuous path." };
+      }
+      return { ...out, reading:"OL", unit:"", tone:"neut", verdict:"Open probes." };
+    }
+    if (sub.kind !== "r") return { ...out, reading:"OL", unit:"", tone:"neut", verdict:"Nothing across the probes." };
+    if (sub.r > d.max) return { ...out, reading:"OL", unit:"", tone:"warn",
+      verdict:`Over range for the ${d.label} position. Move up a range - or it really is open.` };
+    const f = formatRange(d, sub.r);
+    return { ...out, reading:f.t, unit:f.u, tone:"good",
+      verdict: d.max/sub.r > 100 ? "Reading, but ranged high - drop a range for more decimals." : "Good reading, correctly ranged." };
+  }
+
+  // voltage
+  const isDC = G === "DCV";
+  const matches = (isDC && sub.kind === "dc") || (!isDC && sub.kind === "ac");
+  if (sub.kind === "r" || sub.kind === "diode" || sub.kind === "open" || sub.kind === "i"){
+    return { ...out, reading: isDC ? "00.00" : "000.0", unit:isDC ? "V DC" : "V AC", tone:"neut",
+      verdict:"No voltage present. That is what a passive component or an open probe reads." };
+  }
+  if (!matches){
+    return { ...out, reading: isDC ? "00.01" : "000.2", unit:isDC ? "V DC" : "V AC", tone:"warn",
+      verdict: isDC ? "Wandering near zero - this is AC and you are on a DC range. A suspiciously small number is usually the wrong function, not a dead circuit."
+                    : "Wandering near zero - this is DC and you are on an AC range. Switch function before you conclude anything." };
+  }
+  if (sub.v > d.max) return { ...out, reading:"OL", unit:"", tone:"warn",
+    verdict:`Over range. ${d.label} is the maximum this position reads - move up.` };
+  const f = formatRange(d, sub.v);
+  const headroom = d.max / Math.max(sub.v, 1e-9);
+  return { ...out, reading:f.t, unit:f.u, tone: headroom > 20 ? "warn" : "good",
+    verdict: headroom > 20 ? "Correct function, but ranged too high - you are losing decimal places. Drop a range."
+                           : "Correctly ranged. This is the reading you want." };
+}
+
+
+/* ================================================================
+   Driving the instrument
+   ================================================================ */
+const DOT = {good:"good", warn:"warn", bad:"bad", neut:"neut"};
+let current = null;
+
+function dialById(id){ return METER.dial.find(d => d.id === id) || METER.dial[0]; }
+function jackById(id){ return METER.jacks.find(j => j.id === id) || METER.jacks[2]; }
+
+function render(){
+  const st = bench, d = dialById(st.dial);
+  const res = simulate(st);
+
+  document.getElementById("knob").style.transform = `rotate(${angleOf(d.id).toFixed(2)}deg)`;
+  if (res.blows){
+    if (res.blows === "A10") st.fuseA = false; else st.fuseMA = false;
+  }
+  const shown = (st.hold && st.held) ? st.held : res;
+  if (st.hold && !st.held) st.held = res;
+  document.getElementById("lcd").innerHTML = res.off ? "" : renderLcd(shown.reading, shown.unit);
+  drawLeads(st.red, st.black);
+
+  document.querySelectorAll("[data-ring]").forEach(r =>
+    r.classList.toggle("on", r.dataset.ring === st.red || r.dataset.ring === st.black));
+  document.querySelectorAll("[data-lab]").forEach(t => t.classList.toggle("hot", t.dataset.lab === d.id));
+  document.querySelectorAll("[data-tick]").forEach(t => t.classList.toggle("hot", t.dataset.tick === d.id));
+  document.getElementById("btnHold").classList.toggle("active", st.hold);
+  document.getElementById("btnPower").classList.toggle("active", st.power);
+
+  const gname = { DCV:"V", ACV:"V~", DCA:"A", OHM:OHM, DWELL:"DWELL", RPM:"RPMX10", TEST:"" }[d.group] || "";
+  document.getElementById("setup").innerHTML = `
+    <span class="chip dial">Dial <b>${esc((gname ? gname + " " : "") + d.label)}</b></span>
+    <span class="chip red">Red <b>${esc(jackById(st.red).label)}</b></span>
+    <span class="chip blk">Black <b>${esc(jackById(st.black).label)}</b></span>
+    ${st.hold ? '<span class="chip">HOLD</span>' : ""}`;
+
+  const v = document.getElementById("verdict");
+  v.className = "verdict " + (res.tone || "neut");
+  v.innerHTML = esc(res.verdict) + (res.warn ? " <em>" + esc(res.warn) + "</em>" : "");
+
+  const fz = document.getElementById("fuses");
+  const blown = [!st.fuseA && "A (10 A)", !st.fuseMA && "mA (200 mA)"].filter(Boolean);
+  fz.hidden = !blown.length;
+  if (blown.length) fz.innerHTML =
+    `<strong>Fuse blown: ${esc(blown.join(" and "))}.</strong> Every current reading is now a false zero.
+     <button class="btn ghost" id="refuse" type="button">Replace fuse</button>`;
+}
+
+/* set the meter from a scenario, then let him fiddle with it */
+function applySetup(s){
+  bench.dial  = dialById(s.dial).id;
+  bench.red   = METER.jacks.some(j => j.id === s.red) ? s.red : "VOHM";
+  bench.black = "COM";
+  bench.power = true; bench.hold = false; bench.held = null;
+  if (s.subject) bench.subject = s.subject;
+  const sel = document.getElementById("subject");
+  if (sel) sel.value = bench.subject;
+  render();
+}
+
+function onMeterClick(e){
+  const hit = e.target.closest(".hit");
+  if (!hit) return;
+  const st = bench;
+  if (hit.id === "btnPower"){ st.power = !st.power; st.hold = false; st.held = null; }
+  else if (hit.id === "btnHold"){ st.hold = !st.hold; st.held = null; }
+  else if (hit.dataset.pos){ st.dial = hit.dataset.pos; st.held = null; }
+  else if (hit.dataset.jack){
+    const moving = document.querySelector('input[name="moving"]:checked').value;
+    if (moving === "red") st.red = hit.dataset.jack; else st.black = hit.dataset.jack;
+    st.held = null;
+  }
+  render();
+}
+
+
+/* ================================================================
+   The briefing panel
+   ================================================================ */
+function briefHtml(s, opts){
+  const d = dialById(s.dial);
+  let h = `<div class="brief-head">
+      <div class="eyebrow">${esc((GROUPS.find(g => g.id === s.g) || {}).name || (opts && opts.eyebrow) || "Answer")}</div>
+      <h2>${esc(s.title)}</h2>
+      ${s.why ? `<p class="why">${s.why}</p>` : ""}
+    </div>`;
+
+  if (d) h += `<div class="note tip"><span class="ic">DIAL</span><div><b>${esc(d.group === "OFF" ? d.label : d.group + " " + d.label)}</b> &mdash; ${esc(d.desc)}</div></div>`;
+
+  if (s.danger) h += `<div class="note danger"><span class="ic">DANGER</span><div>${s.danger}</div></div>`;
+
+  if (s.steps && s.steps.length){
+    h += `<div class="block"><h3>How to set it up</h3><ol class="steps">${
+      s.steps.map(x => `<li>${x}</li>`).join("")}</ol></div>`;
+  }
+  if (s.expect && s.expect.length){
+    h += `<div class="block"><h3>What you should see</h3><div class="expect-wrap"><table class="expect">
+      <thead><tr><th>Reading</th><th>What it means</th></tr></thead><tbody>${
+      s.expect.map(e => `<tr><td class="val"><span class="dot ${DOT[e.s] || "neut"}"></span>${esc(e.v)}</td><td>${esc(e.m)}</td></tr>`).join("")
+      }</tbody></table></div></div>`;
+  }
+  if (s.gotcha) h += `<div class="note tip"><span class="ic">WATCH</span><div>${s.gotcha}</div></div>`;
+  return h;
+}
+
+function select(s, opts){
+  current = s;
+  applySetup(s);
+  document.getElementById("view-job").innerHTML = briefHtml(s, opts);
+  document.querySelectorAll(".job").forEach(b => b.setAttribute("aria-current", String(b.dataset.id === s.id)));
+  showTab("job");
+  if (opts && opts.scroll) document.getElementById("view-job").scrollIntoView({block:"nearest"});
+}
+
+/* ================================================================
+   Tabs, browse, search
+   ================================================================ */
+function showTab(name){
+  ["job","browse","ask"].forEach(n => {
+    document.getElementById("tab-" + n).setAttribute("aria-selected", String(n === name));
+    document.getElementById("view-" + n).hidden = (n !== name);
+  });
+}
+["job","browse","ask"].forEach(n => {
+  document.getElementById("tab-" + n).addEventListener("click", () => showTab(n));
+});
+
+function renderList(q){
+  const needle = (q || "").trim().toLowerCase();
+  const hit = s => !needle ||
+    (s.title + " " + (s.why||"") + " " + s.g + " " + (s.steps||[]).join(" ")).toLowerCase().includes(needle);
+  const box = document.getElementById("joblist");
+  let h = "", any = false;
+  for (const g of GROUPS){
+    const items = SCENARIOS.filter(s => s.g === g.id && hit(s));
+    if (!items.length) continue;
+    any = true;
+    h += `<div class="grouphead">${esc(g.name)}</div><div class="joblist">${
+      items.map(s => {
+        const d = dialById(s.dial);
+        return `<button class="job" type="button" data-id="${esc(s.id)}">
+          <span class="t">${esc(s.title)}</span>
+          <span class="d">${esc(d ? (d.group === "OFF" ? d.label : d.group + " " + d.label) : "")}</span>
+        </button>`;
+      }).join("")}</div>`;
+  }
+  box.innerHTML = any ? h : `<p class="empty">Nothing matches &ldquo;${esc(q)}&rdquo;. Try the Ask tab &mdash; it can answer things the library does not cover.</p>`;
+  box.querySelectorAll(".job").forEach(b => {
+    b.addEventListener("click", () => select(SCENARIOS.find(s => s.id === b.dataset.id), {scroll:true}));
+  });
+}
+document.getElementById("search").addEventListener("input", e => renderList(e.target.value));
+
+/* ================================================================
+   Ask Claude - free text in, the same instrument setup out.
+   Absent (opened as a local file, or not granted) => the library
+   still works untouched.
+   ================================================================ */
+const VALID_DIALS = METER.dial.map(d => `${d.id} (${d.group} ${d.label})`).join(", ");
+const VALID_JACKS = METER.jacks.map(j => `${j.id} (${j.label}${j.sub ? " - " + j.sub : ""})`).join(", ");
+
+function askPrompt(question){
+  return [
+    `You are coaching someone through using a ${METER.model} multimeter, a MANUAL-RANGING automotive DMM rated ${METER.cat} (1000 V DC / 750 V AC maximum).`,
+    `They are a competent DIYer who is new to multimeters. Be concrete and safety-first. Never invent a capability the meter does not have.`,
+    ``,
+    `Valid dial ids: ${VALID_DIALS}`,
+    `Valid jack ids: ${VALID_JACKS}. The black lead is ALWAYS COM. There is no OFF position - power is a button.`,
+    ``,
+    `Answer their question with JSON only, this exact shape:`,
+    `{"title":"short job name","why":"1-2 sentences on what this measurement tells them",`,
+    `"dial":"<a valid dial id>","red":"<a valid jack id>","black":"COM",`,
+    `"reading":"a plausible display string, digits only e.g. 12.62 or OL","unit":"e.g. V DC",`,
+    `"steps":["setup step",...],"expect":[{"v":"a reading","s":"good|warn|bad|neut","m":"what it means"},...],`,
+    `"danger":"only if there is a real hazard, else null","gotcha":"the mistake people make here, else null"}`,
+    ``,
+    `Pick the SMALLEST dial range above the expected value. If current is involved, red must be A10 (the 10 range) or MA (the 20m/200m ranges), and you must warn that the meter goes in series. If it is a mains question, include a danger note.`,
+    ``,
+    `Question: ${question}`
+  ].join("\n");
+}
+
+function normalise(o, question){
+  const s = {
+    id: "__ask__",
+    g: null,
+    title: o && o.title ? String(o.title) : question.slice(0, 70),
+    why: o && o.why ? esc(String(o.why)) : "",
+    dial: o && dialById(o.dial) ? o.dial : "dcv20",
+    red:  o && METER.jacks.some(j => j.id === o.red) ? o.red : "VOHM",
+    black:"COM",
+    reading: o && o.reading != null ? String(o.reading).slice(0, 6) : "OL",
+    unit: o && o.unit ? String(o.unit).slice(0, 8) : "",
+    steps: Array.isArray(o && o.steps) ? o.steps.slice(0, 8).map(x => esc(String(x))) : [],
+    expect: Array.isArray(o && o.expect) ? o.expect.slice(0, 8).map(e => ({
+      v: String(e && e.v || ""), s: DOT[e && e.s] || "neut", m: String(e && e.m || "")
+    })) : [],
+    danger: o && o.danger ? esc(String(o.danger)) : null,
+    gotcha: o && o.gotcha ? esc(String(o.gotcha)) : null
+  };
+  return s;
+}
+
+const SUGGESTIONS = [
+  "How do I check if my extension cord is bad?",
+  "Testing a thermocouple on a water heater",
+  "Is my trailer's 7-pin connector wired right?",
+  "How do I measure current draw on an LED strip?"
+];
+
+async function initAsk(){
+  const view = document.getElementById("view-ask");
+  const sample = (window.claude && window.claude.use) ? await window.claude.use("sample").catch(() => null) : null;
+
+  if (!sample){
+    view.innerHTML = `<div class="askoff">
+      <strong>Ask is not available in this copy.</strong><br>
+      This is the offline build &mdash; the ${SCENARIOS.length} jobs under <b>Browse</b> all work with no network and no account,
+      which is the point of keeping a local copy in the garage. Open the published version on your phone to ask free-text questions.
+    </div>`;
+    return;
+  }
+
+  view.innerHTML = `
+    <div class="ask-form">
+      <textarea id="q" placeholder="What are you trying to measure? e.g. &ldquo;how do I test the igniter on a gas dryer?&rdquo;"></textarea>
+      <button class="btn" id="askbtn" type="button">Ask</button>
+    </div>
+    <div class="suggest" id="suggest">${SUGGESTIONS.map(t => `<button class="btn ghost" type="button" data-q="${esc(t)}">${esc(t)}</button>`).join("")}</div>
+    <div id="askout"></div>
+    <p class="footnote">Answers set the meter on the left the same way the library does. Claude can be wrong &mdash; on anything mains-voltage, trust the manual and the library entries over a generated answer.</p>`;
+
+  const q = document.getElementById("q"), btn = document.getElementById("askbtn"), out = document.getElementById("askout");
+
+  async function run(text){
+    if (!text.trim()) return;
+    btn.disabled = true;
+    out.innerHTML = `<p class="thinking">Working out the setup&hellip;</p>`;
+    try{
+      const res = await sample.json(askPrompt(text.trim()), { modelTier:"default" });
+      const s = normalise(res, text.trim());
+      current = s;
+      applySetup(s);
+      out.innerHTML = briefHtml(s, { eyebrow:"Asked Claude" });
+    }catch(err){
+      const code = err && err.code;
+      out.innerHTML = `<div class="note danger"><span class="ic">ERROR</span><div>${
+        code === "rate_limited" ? "Too many questions too quickly. Wait a moment and ask again." :
+        code === "not_granted"  ? "This page is not allowed to ask Claude. The Browse library still works." :
+        "That did not come back. Try rewording the question, or check Browse for a similar job."
+      }</div></div>`;
+    }finally{ btn.disabled = false; }
+  }
+  btn.addEventListener("click", () => run(q.value));
+  q.addEventListener("keydown", e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) run(q.value); });
+  document.getElementById("suggest").addEventListener("click", e => {
+    const b = e.target.closest("[data-q]");
+    if (b){ q.value = b.dataset.q; run(b.dataset.q); }
+  });
+}
+
+/* ================================================================
+   Theme toggle + boot
+   ================================================================ */
+document.getElementById("themebtn").addEventListener("click", () => {
+  const root = document.documentElement;
+  const now = root.getAttribute("data-theme");
+  const dark = now ? now === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.setAttribute("data-theme", dark ? "light" : "dark");
+});
+
+buildMeter();
+(function initBench(){
+  const sel = document.getElementById("subject");
+  sel.innerHTML = SUBJECTS.map(x => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("");
+  sel.addEventListener("change", e => { bench.subject = e.target.value; bench.held = null; render(); });
+  document.querySelectorAll('input[name="moving"]').forEach(r => r.addEventListener("change", render));
+  document.getElementById("fuses").addEventListener("click", e => {
+    if (e.target.id === "refuse"){ bench.fuseA = true; bench.fuseMA = true; bench.held = null; render(); }
+  });
+})();
+renderList("");
+if (!METER.verified){
+  const u = document.getElementById("unverified");
+  u.hidden = false;
+  u.innerHTML = "Traced from the Menards product photo, not yet confirmed against the meter in hand. Three positions are still uncertain &mdash; the <b>20m</b>/<b>200m</b> pair and the <b>200m</b> on the V~ side. Check the real dial before trusting a position.";
+}
+select(SCENARIOS[0]);
+initAsk();
+</script>

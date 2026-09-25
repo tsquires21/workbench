@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Garden · The Workbench</title>
+<meta name="description" content="A garden app that works out how many hours of sun every part of the yard gets, using free government LiDAR scans, sun-position math, and shade from every tree and roof.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="A yard that knows where the sun lands">
+<meta property="og:description" content="Free government laser scans, sun math to the minute, and shade traced from every tree and roof.">
+<meta property="og:image" content="https://tsquires21.github.io/workbench/img/og-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Figtree:wght@400;600;700&family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..700,0..100,0..1&family=JetBrains+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body data-accent="garden">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><div class="wrap">
+  <a class="brand" href="index.html"><svg class="doodle" viewBox="0 0 32 32" aria-hidden="true"><path d="M6 26 L19 13"/><path d="M17 9 l6 -3 l4 4 l-3 6 l-4 -1 z"/><path class="fill" d="M17 9 l6 -3 l4 4 l-3 6 l-4 -1 z"/></svg>The Workbench <small>by Tim Squires</small></a>
+  <nav><a class="hide-sm" href="index.html#projects">Projects</a><a class="hide-sm" href="build-for-you.html">Work with me</a>
+    <button class="lamp" type="button" aria-label="Toggle theme"><svg class="doodle" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/></svg></button></nav>
+</div></header>
+
+<main id="main">
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="kicker"><svg class="doodle" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="7"/><circle class="fill" cx="20" cy="20" r="7"/><path d="M20 4v5M20 31v5M4 20h5M31 20h5M8.5 8.5l3.5 3.5M28 28l3.5 3.5M8.5 31.5 12 28M28 12l3.5-3.5"/></svg>No. 01 · The Garden</div>
+        <h1>A yard that knows where <span class="scribble">the sun lands.</span></h1>
+        <p class="lede">Every seed packet says "full sun." But how many hours does the back corner really get in June? What about in March, when the maple has no leaves yet? Garden Helper is the app I built to run our garden: every bed and plant on one screen, a harvest log that fills itself in, and a sun map that answers those questions for every square yard of the yard.</p>
+        <div class="stamps">
+          <span class="stamp">Laser scan<b>USGS · free</b></span>
+          <span class="stamp">Roofs line up<b>within ~15 cm</b></span>
+          <span class="stamp">Hardiness<b>Zone 6b</b></span>
+        </div>
+      </div>
+      <div class="device-stage">
+        <div class="phone tilt-l"><div class="screen"><img src="img/garden/planner-home.webp" alt="Garden Helper on a phone: each bed is a wooden box with a tile per plant" width="780" height="1688" data-zoom></div></div>
+        <div class="phone tilt-r"><div class="screen"><img src="img/garden/sunmap-phone.webp" alt="Garden Helper's sun map on a phone: the yard shaded by hours of sun, with the beds drawn on" width="780" height="1688" data-zoom></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <div class="section-label">What it does</div>
+
+    <div class="beat narrow-visual">
+      <div class="device-stage">
+        <div class="phone small tilt-l"><div class="screen"><img src="img/garden/planner-home.webp" alt="Bed map: deck planter, NW greens, NE peppers, SW tomatoes, SE heirlooms, and two in-ground plots" width="780" height="1688" data-zoom></div></div>
+        <div class="phone small tilt-r"><div class="screen"><img src="img/garden/planner-bed.webp" alt="A bed opened up: the SW tomato bed, with plant tiles you drag into place and its sun described" width="780" height="1688" data-zoom></div></div>
+      </div>
+      <div class="prose">
+        <span class="num">one</span>
+        <h3>The whole garden on one screen</h3>
+        <p>Every bed is a wooden box, and every plant is a tile. Tap a bed's name to open it up. You'll see how much sun it gets, and you can drag the plants around until the layout matches the real bed.</p>
+        <p class="note"><svg class="doodle" viewBox="0 0 40 40" aria-hidden="true"><path d="M36 8 C 22 6, 10 14, 6 30"/><path d="M4 22 L6 31 L14 27"/></svg>Built to be used with dirty hands: big targets, one tap, no forms.</p>
+      </div>
+    </div>
+
+    <div class="beat flip narrow-visual">
+      <div class="device-stage">
+        <div class="phone small tilt-l"><div class="screen"><img src="img/garden/planner-info.webp" alt="Pressing and holding a plant shows its card: variety, how many harvested, and picking notes" width="780" height="1688" data-zoom></div></div>
+        <div class="phone small tilt-r"><div class="screen"><img src="img/garden/planner-harvest.webp" alt="Harvest log: dated entries like Roma Plum x12 and Sweet 100 Cherry x24" width="780" height="1688" data-zoom></div></div>
+      </div>
+      <div class="prose">
+        <span class="num">two</span>
+        <h3>Tap to harvest. Hold to learn.</h3>
+        <p>Tap a tomato to log that you picked it. Press and hold any plant for its card: the variety, how many you've harvested so far, and notes on when it's ready. The harvest log fills itself in as you go, so by the end of the season there's a real record of what each bed produced.</p>
+        <p>The home screen also shows today's weather and a watering reminder for the week, and there are about 40 variety profiles behind the tiles.</p>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div>
+        <div class="browser"><div class="bar"><i></i><i></i><i></i><span id="sunswap-cap">garden helper · yard sun map · photo</span></div>
+          <div class="swap crop-app" id="sunswap">
+            <img class="main" src="img/garden/sunmap-aerial.webp" alt="Garden Helper's sun map page showing the aerial photo of the yard with the beds placed on it" width="1600" height="1818" data-zoom>
+            <img class="alt" src="img/garden/sunmap.webp" alt="The same page coloured by hours of direct sun" width="1600" height="1818" data-zoom>
+          </div>
+        </div>
+        <div class="seg" data-swap="#sunswap" data-caption="#sunswap-cap" style="margin-top:14px" role="group" aria-label="Map layer">
+          <button type="button" aria-pressed="true" data-url="garden helper · yard sun map · photo">Photo</button>
+          <button type="button" aria-pressed="false" data-url="garden helper · yard sun map · sun hours">Sun hours</button>
+        </div>
+      </div>
+      <div class="prose">
+        <span class="num">three</span>
+        <h3>Drag a bed. See its sunlight.</h3>
+        <p>The sun map puts the garden on top of a real aerial photo of the yard. Drag a bed to where it actually sits, and it tells you how many hours of direct sun that spot gets. Flip the switch and the whole yard becomes a heat map, running from dark shade to gold sun all day.</p>
+        <p>The yard was never measured with a tape. The outlines of the house and shop come from public data, and they land on the roofs in the photo within about 15 centimetres.</p>
+      </div>
+    </div>
+
+    <div class="beat flip">
+      <div class="toy" data-frames>
+        <div class="toy-label"><span>Try it: the longest day of the year</span><span>21 June</span></div>
+        <div class="frames">
+          <img class="pixel on" src="img/garden/sun-07-00.webp" data-label="7:00 am" alt="Shade at 7:00 am" width="800" height="800">
+          <img class="pixel" src="img/garden/sun-08-00.webp" data-label="8:00 am" alt="Shade at 8:00 am" width="800" height="800" loading="lazy">
+          <img class="pixel" src="img/garden/sun-09-00.webp" data-label="9:00 am" alt="Shade at 9:00 am" width="800" height="800" loading="lazy">
+          <img class="pixel" src="img/garden/sun-10-00.webp" data-label="10:00 am" alt="Shade at 10:00 am" width="800" height="800" loading="lazy">
+          <img class="pixel" src="img/garden/sun-11-00.webp" data-label="11:00 am" alt="Shade at 11:00 am" width="800" height="800" loading="lazy">
+          <img class="pixel" src="img/garden/sun-12-00.webp" data-label="12:00 pm" alt="Shade at 12:00 pm" width="800" height="800" loading="lazy">
+          <img class="pixel" src="img/garden/sun-13-00.webp" data-label="1:00 pm" alt="Shade at 1:00 pm" width="800" height="800" loading="lazy">
+          <img class="pixel" src="img/garden/sun-14-00.webp" data-label="2:00 pm" alt="Shade at 2:00 pm" width="800" height="800" loading="lazy">
+          <img class="pixel" src="img/garden/sun-15-00.webp" data-label="3:00 pm" alt="Shade at 3:00 pm" width="800" height="800" loading="lazy">
+          <img class="pixel" src="img/garden/sun-16-00.webp" data-label="4:00 pm" alt="Shade at 4:00 pm" width="800" height="800" loading="lazy">
+          <img class="pixel" src="img/garden/sun-17-00.webp" data-label="5:00 pm" alt="Shade at 5:00 pm" width="800" height="800" loading="lazy">
+          <img class="pixel" src="img/garden/sun-18-00.webp" data-label="6:00 pm" alt="Shade at 6:00 pm" width="800" height="800" loading="lazy">
+          <img class="pixel" src="img/garden/sun-19-00.webp" data-label="7:00 pm" alt="Shade at 7:00 pm" width="800" height="800" loading="lazy">
+          <span class="clock">7:00 am</span>
+        </div>
+        <input type="range" min="0" max="12" step="1" value="0" aria-label="Time of day" style="margin-top:12px">
+        <button class="btn" type="button" data-play style="margin-top:8px">&#9654; Play the day</button>
+      </div>
+      <div class="prose">
+        <span class="num">four</span>
+        <h3>Watch the shadows move</h3>
+        <p>This is what the model sees, hour by hour, across the neighbourhood on 21 June. Navy is full shade, brown is sun filtered through leaves, and cream is direct sun. Press play and watch the shadows swing from west to east as the sun crosses the sky.</p>
+        <p>Add up every minute of the day and you get the sun-hours map. Do the same for January and the answer is completely different.</p>
+        <p class="note red"><svg class="doodle" viewBox="0 0 40 40" aria-hidden="true"><path d="M36 30 C 24 32, 12 26, 8 10"/><path d="M4 17 L8 9 L14 15"/></svg>Same yard, two seasons. Scroll down for January.</p>
+      </div>
+    </div>
+
+    <div class="beat flip narrow-visual">
+      <figure class="taped r" style="margin:0"><img src="img/garden/lidar-relief.webp" alt="Shaded-relief image of the neighborhood built from LiDAR: rooftops, streets and tree canopy in 3D-looking relief" width="800" height="800" data-zoom><figcaption>What the laser saw. Every roof and treetop, from a plane.</figcaption></figure>
+      <div class="prose">
+        <span class="num">five</span>
+        <h3>Where the heights come from</h3>
+        <p>To know what casts a shadow, you need to know how tall everything is. In 2018 the US Geological Survey flew a plane over the region, firing laser pulses at the ground and timing each bounce. That's called LiDAR, and the data is free to anyone.</p>
+        <p>The app downloads the points for this block and turns them into a height map of every roof, fence and treetop. The picture on the left is that height map, shaded as if the sun were low in the northwest.</p>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="device-stage">
+        <div class="phone small tilt-l"><div class="screen"><img src="img/garden/planner-diagnose.webp" alt="Diagnose tab: pick a bed, take a photo of a sick plant, analyze" width="780" height="1688" data-zoom></div></div>
+        <div class="phone small tilt-r"><div class="screen"><img src="img/garden/planner-tools.webp" alt="Garden calculators: soil mix, rain barrel sizer, fall plant-by date" width="780" height="1688" data-zoom></div></div>
+      </div>
+      <div class="prose">
+        <span class="num">six</span>
+        <h3>Bugs, blights, and the folklore problem</h3>
+        <p>Snap a photo of a spotty leaf and an AI model suggests what's going on. Behind that is a field guide I researched for Kansas City vegetables, covering early blight, squash vine borers, powdery mildew and more, with organic fixes for each.</p>
+        <p>The pest research turned up something useful: a lot of companion-planting advice is folklore. "Plant basil to repel hornworms" doesn't hold up in field trials. What does hold up is planting flowers that feed the <em>good</em> bugs, and using trap crops. So the app labels each tip as evidence-based, promising, or myth.</p>
+        <p>The calculators handle the rest: soil mix, rain barrel sizing, frost dates, seed-starting dates and a whole fall planting plan, all tuned to zone 6b.</p>
+      </div>
+    </div>
+
+    <div class="beat flip">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <figure class="taped" style="margin:0"><img class="pixel" src="img/garden/sun-day-june.webp" alt="Total sun hours on 21 June" width="200" height="200" style="width:100%" data-zoom><figcaption>June: long days</figcaption></figure>
+        <figure class="taped r" style="margin:0"><img class="pixel" src="img/garden/sun-day-january.webp" alt="Total sun hours in mid January" width="200" height="200" style="width:100%" data-zoom><figcaption>January: long shadows</figcaption></figure>
+      </div>
+      <div class="prose">
+        <span class="num">seven</span>
+        <h3>June versus January</h3>
+        <p>The same neighborhood, as total hours of sun for the day. Bright yellow is a full day of light, and dark brown is almost none. In winter the low sun lets every tree and house throw a long shadow, so the sunny patches shrink to islands.</p>
+        <p>This is why a bed that's perfect for tomatoes can be useless for winter greens.</p>
+      </div>
+    </div>
+
+    <details class="hood">
+      <summary>Under the hood</summary>
+      <div class="inner">
+        <div class="flow">
+          <div class="step"><span class="src">USGS 3DEP</span><b>LiDAR points</b><small>Laser returns from the 2018 flight, cached locally</small></div>
+          <div class="arrow">→</div>
+          <div class="step"><span class="src">Microsoft</span><b>Building outlines</b><small>So a roof is never mistaken for a tree of the same height</small></div>
+          <div class="arrow">→</div>
+          <div class="step"><span class="src">NREL · pvlib</span><b>Sun position</b><small>Where the sun is, every minute of the day</small></div>
+          <div class="arrow">→</div>
+          <div class="step"><span class="src">Ray tracing</span><b>Shade, per cell</b><small>A ray from each square toward the sun: blocked, filtered, or clear</small></div>
+        </div>
+        <ul>
+          <li><strong>Surface and ground models.</strong> The point cloud becomes two rasters: everything the laser hit first (roofs, canopy) and the bare ground underneath. The difference is the height of what's in the way.</li>
+          <li><strong>Trees aren't walls.</strong> A roof blocks the sun completely. A tree crown lets some through, and how much changes with the season, using leaf-on and leaf-off dates for zone 6b species.</li>
+          <li><strong>Confidence, not just a number.</strong> Each cell carries a low, medium or high confidence label, so a shaky estimate says so.</li>
+          <li><strong>The photo underneath</strong> is USDA NAIP aerial imagery: public domain, about 30 cm per pixel, and lined up three independent ways.</li>
+          <li>Python with NumPy and rasterio for the geometry, a small Flask server, and plain HTML on the phone. It runs on a laptop at home.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <section class="block wrap">
+    <div class="honest">
+      <p><strong>The laser scan is from 2018, and the yard isn't.</strong> When I checked the map against the real yard, it still showed a tree along the east fence that was cut down years ago, and a solid lump that turned out to be an old swingset. The covered deck had been read as "trees" and was being modelled as a leafy roof that lets 85% of the light through.</p>
+      <p>The model is only as current as the last flight over the house, and nothing free fixes that. So the next feature is a way to erase things that are gone. Until then, the map says how confident it is, cell by cell.</p>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <div class="section-label">Where it's headed</div>
+    <div class="beat narrow-visual">
+      <div style="display:grid;gap:18px">
+        <div class="browser"><div class="bar"><i></i><i></i><i></i><span>garden helper · final vision (design mockup)</span></div><img src="img/garden/mockup-final-vision.webp" alt="Design mockup of the finished Garden Helper: the bed map beside today's tasks, weather and smart alerts" width="1600" height="1000" data-zoom></div>
+        <figure class="taped" style="margin:0"><img src="img/garden/mockup-endstate.webp" alt="Design mockup: Garden End-State master plan, a garden that feeds two people year-round" width="1600" height="1000" data-zoom><figcaption>The whole-yard plan, also a mockup</figcaption></figure>
+      </div>
+      <div class="prose">
+        <p>The next version puts today's tasks, the weather, and smart alerts right beside the bed map. Past that, it grows into a whole-yard plan: beds, berries, a root cellar, rain capture, and a season calendar that tells you what to do this week.</p>
+        <p>I design with clickable mockups like these before anything gets built, so the decisions get made while changing them is still cheap.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <div class="sticky">
+      <h3>Could this work for you?</h3>
+      <p>Swap the tomatoes for solar panels, a patio, or a new tree, and it's the same question: <strong>how much sun does this exact spot really get, month by month?</strong> The same free public data can answer it for most addresses.</p>
+      <p style="margin:0"><a href="build-for-you.html">Got a problem like these? →</a></p>
+    </div>
+  </section>
+
+  <nav class="pager" data-pager aria-label="Previous and next page"></nav>
+</main>
+
+<footer class="foot"><div class="wrap">
+  <span class="hand">Made by hand (and with Claude) in Kansas City.</span> · <a data-contact href="#contact"><span data-contact-text>timothyjsquires+workbench [at] gmail [dot] com</span></a><br>
+  <span data-pageno></span> · Screens are from the real apps. Business screens use made-up demo data, and no real customers appear anywhere.<br>
+  I run my own hosting too. This site is published free on GitHub Pages, and the live pieces (the lightning watcher, the D&amp;D ledger) run on a small Linux server at my house.
+</div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

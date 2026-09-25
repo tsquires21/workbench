@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Got a Problem Like These? · The Workbench</title>
+<meta name="description" content="The kinds of small, specific tools I could build with you, each one traced back to something that already works in this notebook.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="Got a problem like these?">
+<meta property="og:description" content="The kinds of tools I could build with you, each traced back to something that already works.">
+<meta property="og:image" content="https://tsquires21.github.io/workbench/img/og-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Figtree:wght@400;600;700&family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..700,0..100,0..1&family=JetBrains+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  .ideas { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: clamp(18px, 3vw, 30px); }
+  .idea { background: var(--card); border-radius: var(--radius); padding: 22px 22px 18px; box-shadow: var(--shadow); position: relative; display: flex; flex-direction: column; }
+  .idea .who { font: 700 .7rem var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+  .idea h3 { margin: 6px 0 8px; font-size: 1.35rem; padding-right: 64px; }
+  .idea p { color: var(--ink-soft); font-size: .98rem; }
+  .idea .from { margin-top: auto; padding-top: 12px; border-top: 1px dashed var(--rule); font-size: .88rem; color: var(--pencil); }
+  .idea .from a { color: var(--ink); }
+  .idea .catch { font-family: var(--f-hand); font-size: 1.2rem; color: var(--red-pencil); line-height: 1.2; margin: 0 0 12px; }
+  .idea .sketch { width: 54px; height: 54px; position: absolute; top: 14px; right: 14px; opacity: .8; }
+  .steps { counter-reset: s; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .steps div { counter-increment: s; background: var(--card); border-radius: 12px; padding: 16px 18px; box-shadow: var(--shadow); }
+  .steps div::before { content: counter(s); font: 700 2rem var(--f-hand); color: var(--accent); display: block; line-height: 1; margin-bottom: 4px; }
+  .steps b { font-family: var(--f-display); display: block; margin-bottom: 4px; }
+  .steps span { color: var(--ink-soft); font-size: .95rem; }
+</style>
+</head>
+<body data-accent="build">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><div class="wrap">
+  <a class="brand" href="index.html"><svg class="doodle" viewBox="0 0 32 32" aria-hidden="true"><path d="M6 26 L19 13"/><path d="M17 9 l6 -3 l4 4 l-3 6 l-4 -1 z"/><path class="fill" d="M17 9 l6 -3 l4 4 l-3 6 l-4 -1 z"/></svg>The Workbench <small>by Tim Squires</small></a>
+  <nav><a class="hide-sm" href="index.html#projects">Projects</a><a class="hide-sm" href="build-for-you.html" aria-current="page">Work with me</a>
+    <button class="lamp" type="button" aria-label="Toggle theme"><svg class="doodle" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/></svg></button></nav>
+</div></header>
+
+<main id="main">
+  <section class="hero wrap">
+    <div class="kicker"><svg class="doodle" viewBox="0 0 40 40" aria-hidden="true"><path d="M6 36 V14 L20 5 L34 14 V36 Z"/><path class="fill" d="M6 36 V14 L20 5 L34 14 V36 Z"/><path d="M15 36 V24 h10 v12"/></svg>No. 10 · For you</div>
+    <h1>Got a problem <span class="scribble">like these?</span></h1>
+    <p class="lede" style="max-width:60ch">Everything in this notebook started the same way: a real, specific annoyance that no off-the-shelf app quite fixed. If you've got one of those in your business, here are the kinds of things I'd enjoy exploring with you. Each one is traced back to something already built and working in these pages.</p>
+  </section>
+
+  <section class="block wrap">
+    <div class="ideas">
+
+      <article class="idea">
+        <svg class="doodle sketch" viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="10" width="36" height="46" rx="4"/><path d="M24 6h16v8H24z"/><path d="M22 26l4 4 8-8M22 42h20"/></svg>
+        <span class="who">Crews &amp; jobs</span>
+        <h3>A system your crew will actually use</h3>
+        <p>Jobs at addresses, each person's day on their phone, check-lists and photos as proof, and an office view of what's late and what's billable. It's shaped around how your crew really works.</p>
+        <div class="from">Already built: <a href="crm.html">the business system</a>, which runs separate businesses side by side.</div>
+      </article>
+
+      <article class="idea">
+        <svg class="doodle sketch" viewBox="0 0 64 64" aria-hidden="true"><path d="M8 50 L22 30 L34 40 L46 22 L58 34"/><circle cx="46" cy="22" r="4"/><path d="M8 58 H58"/></svg>
+        <span class="who">Public data</span>
+        <h3>Free public data, turned into a clear answer</h3>
+        <p>Weather, satellite, county property records and laser scans, narrowed to the exact places that matter to you: how much sun a spot gets, whether a storm crossed an address, or which properties fit a profile.</p>
+        <div class="from">Already built: <a href="garden.html">the sun map</a> and <a href="lightning.html">the lightning watcher</a>.</div>
+      </article>
+
+      <article class="idea">
+        <svg class="doodle sketch" viewBox="0 0 64 64" aria-hidden="true"><rect x="16" y="6" width="32" height="52" rx="6"/><rect x="21" y="12" width="22" height="12" rx="2"/><path d="M22 32h4M30 32h4M38 32h4M22 40h4M30 40h4M38 40h4M22 48h4M30 48h12"/></svg>
+        <span class="who">In the field</span>
+        <h3>A calculator that works with no signal</h3>
+        <p>Your trade's math (quantities, materials, waste) in a phone app that works in a basement or on a rural site, with every formula written down and checked against numbers you trust.</p>
+        <div class="from">Already built: <a href="workbench.html">the trade calculators</a>, six apps on one tested engine.</div>
+      </article>
+
+      <article class="idea">
+        <svg class="doodle sketch" viewBox="0 0 64 64" aria-hidden="true"><path d="M10 54 V12 M10 54 H56"/><path d="M16 44 L28 30 L38 36 L52 18"/><circle cx="28" cy="30" r="2.5"/><circle cx="38" cy="36" r="2.5"/><circle cx="52" cy="18" r="2.5"/></svg>
+        <span class="who">Reporting</span>
+        <h3>Messy data, cleaned up and answerable</h3>
+        <p>Spreadsheets and exports from a few systems, reconciled into one place, so the questions that take an afternoon today take a minute. This is my day job's home turf.</p>
+        <div class="from">Background: my day job as a senior data analyst and integration specialist (SQL, Power BI, Python).</div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <div class="section-label">How I'd go about it</div>
+    <div class="steps">
+      <div><b>Talk first</b><span>An hour on how your work actually goes, and where the time and money leak out.</span></div>
+      <div><b>Small and real</b><span>A working prototype of one piece, using your real data, before anyone spends real money.</span></div>
+      <div><b>Use it on real jobs</b><span>You and your crew use it for a couple of weeks. What breaks tells us what to build next.</span></div>
+      <div><b>You own it</b><span>Free and open-source parts wherever possible, so you're not renting your own data back.</span></div>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <div class="honest">
+      <p><strong>Who you'd be working with.</strong> I'm one person with a day job I like. I build in the evenings and on weekends, designing, deciding and testing while an AI partner does a lot of the typing. That makes me quick at small, specific tools that fit exactly how you work. For a big system that needs a team on call around the clock, I'd tell you so up front.</p>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <div class="sticky">
+      <h3>Want to talk?</h3>
+      <p>Bring the problem that eats your week. That's usually the right place to start.</p>
+      <p><a class="btn accent contact" data-contact href="#contact"><span data-contact-text>timothyjsquires+workbench [at] gmail [dot] com</span></a></p>
+      <p style="margin:0"><a href="index.html">&larr; Back to the start</a></p>
+    </div>
+  </section>
+
+  <nav class="pager" data-pager aria-label="Previous and next page"></nav>
+</main>
+
+<footer class="foot"><div class="wrap">
+  <span class="hand">Made by hand (and with Claude) in Kansas City.</span> · <a data-contact href="#contact"><span data-contact-text>timothyjsquires+workbench [at] gmail [dot] com</span></a><br>
+  <span data-pageno></span> · Screens are from the real apps. Business screens use made-up demo data, and no real customers appear anywhere.<br>
+  I run my own hosting too. This site is published free on GitHub Pages, and the live pieces (the lightning watcher, the D&amp;D ledger) run on a small Linux server at my house.
+</div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

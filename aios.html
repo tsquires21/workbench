@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How I Build · The Workbench</title>
+<meta name="description" content="The system behind the projects: a research agent, overnight work shifts that propose changes for review, a morning brief on the phone, and scouts that look for existing tools before anything gets built.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="How one person ships all this">
+<meta property="og:description" content="A research agent, overnight shifts, and a morning brief. The AI proposes, and I decide.">
+<meta property="og:image" content="https://tsquires21.github.io/workbench/img/og-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Figtree:wght@400;600;700&family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..700,0..100,0..1&family=JetBrains+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  .dial { width: 100%; max-width: 440px; margin-inline: auto; display: block; }
+  .dial .face { fill: var(--card); stroke: var(--ink); stroke-width: 2; }
+  .dial .night { fill: color-mix(in srgb, var(--blue-pencil) 14%, transparent); }
+  .dial .tick { stroke: var(--pencil); stroke-width: 1.5; }
+  .dial .hr { font: 600 11px var(--f-mono); fill: var(--pencil); text-anchor: middle; dominant-baseline: middle; }
+  .dial .ev circle { fill: var(--accent); stroke: var(--card); stroke-width: 2; }
+  .dial .lbl { font: 700 17px var(--f-hand); fill: var(--ink); }
+  .dial .lbl.dim { fill: var(--blue-pencil); }
+  .dial .center { font: 700 15px var(--f-display); fill: var(--ink); text-anchor: middle; }
+  .dial .sub { font: 12px var(--f-hand); fill: var(--pencil); text-anchor: middle; font-size: 15px; }
+  .parts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 18px; }
+  .part { background: var(--card); border-radius: 12px; padding: 16px 18px; box-shadow: var(--shadow); }
+  .part b { font-family: var(--f-display); font-size: 1.15rem; display: block; margin-bottom: 4px; }
+  .part span { color: var(--ink-soft); font-size: .95rem; }
+  .part .k { font: 700 .7rem var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+</style>
+</head>
+<body data-accent="aios">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><div class="wrap">
+  <a class="brand" href="index.html"><svg class="doodle" viewBox="0 0 32 32" aria-hidden="true"><path d="M6 26 L19 13"/><path d="M17 9 l6 -3 l4 4 l-3 6 l-4 -1 z"/><path class="fill" d="M17 9 l6 -3 l4 4 l-3 6 l-4 -1 z"/></svg>The Workbench <small>by Tim Squires</small></a>
+  <nav><a class="hide-sm" href="index.html#projects">Projects</a><a class="hide-sm" href="build-for-you.html">Work with me</a>
+    <button class="lamp" type="button" aria-label="Toggle theme"><svg class="doodle" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/></svg></button></nav>
+</div></header>
+
+<main id="main">
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="kicker"><svg class="doodle" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="6"/><circle class="fill" cx="20" cy="20" r="6"/><path d="M20 4v6M20 30v6M4 20h6M30 20h6M8.7 8.7l4.2 4.2M27.1 27.1l4.2 4.2M8.7 31.3l4.2-4.2M27.1 12.9l4.2-4.2"/></svg>No. 09 · How I build</div>
+        <h1>How one person <span class="scribble">ships all this.</span></h1>
+        <p class="lede">I have a day job I enjoy, and none of this existed in April. Everything in this notebook happened on evenings and weekends, in <a href="index.html#timeline">under five months</a>. The trick isn't working more hours. It's a personal system, which I call my AI operating system, that does the legwork around the clock and brings me decisions instead of chores.</p>
+        <p class="lede">The rule that makes it trustworthy: <strong>the AI proposes, and I decide.</strong> Nothing it does overnight goes live until I've read it.</p>
+      </div>
+      <svg class="dial" viewBox="0 0 440 440" role="img" aria-label="A 24-hour day: research at 10 pm and 11:55 pm, night shifts that propose changes while I sleep, and a morning brief at 6:45 am">
+        <circle class="face" cx="220" cy="220" r="170"/>
+        <!-- night wedge, 9 pm (225 deg) to 7 am (15 deg); midnight at the top -->
+        <path class="night" d="M220 220 L99.8 99.8 A170 170 0 0 1 384.2 264 Z"/>
+        <g id="ticks"></g>
+        <g class="ev">
+          <circle cx="135" cy="72.8" r="9"/>
+          <circle cx="216.3" cy="50" r="9"/>
+          <circle cx="386.7" cy="253.2" r="9"/>
+        </g>
+        <text class="lbl" x="12" y="50">10 pm · research</text>
+        <text class="lbl" x="232" y="28">11:55 pm · second run</text>
+        <text class="lbl" x="345" y="262" text-anchor="end">6:45 am</text>
+        <text class="lbl" x="345" y="282" text-anchor="end">morning brief</text>
+        <text class="lbl dim" x="222" y="140" text-anchor="middle">night shifts</text>
+        <text class="lbl dim" x="222" y="160" text-anchor="middle">propose changes</text>
+        <text class="center" x="220" y="226">24 hours</text>
+        <text class="sub" x="220" y="250">shaded = while I sleep</text>
+      </svg>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <div class="section-label">The pieces</div>
+    <div class="parts">
+      <div class="part"><span class="k">Research</span><b>Roland, the research agent</b><span>"Roland, go learn about X." He asks clarifying questions first, searches widely, and returns findings with sources, facts only, no opinions. Plenty of what's in this notebook started as one of his reports.</span></div>
+      <div class="part"><span class="k">Overnight</span><b>The research queue</b><span>Drop a topic in a list from my phone during the day. Two runs overnight research it and leave a written brief with citations for the morning.</span></div>
+      <div class="part"><span class="k">Overnight</span><b>Night shifts</b><span>A builder works through a ranked to-do list while I sleep. It only <em>proposes</em>: each change waits as a reviewable patch, and I approve or reject it with a tap.</span></div>
+      <div class="part"><span class="k">6:45 am</span><b>The morning brief</b><span>What came in overnight, what's stale, and the single best first move of the day, waiting for me with my coffee.</span></div>
+      <div class="part"><span class="k">Scouts</span><b>Reuse before building</b><span>Radars scan open-source projects and a few trusted YouTube channels, and brief only the handful that matter. The first question for any new idea is "does this already exist?"</span></div>
+      <div class="part"><span class="k">Hosting</span><b>A server in the house</b><span>I run the infrastructure too. A small, always-on Linux box at home serves the live pieces, like the lightning watcher and the D&amp;D ledger, to anyone's phone. This site is published free on GitHub Pages. There are no monthly bills.</span></div>
+      <div class="part"><span class="k">Gatekeeper</span><b>The roast</b><span>Before I invest in an idea, five AI critics attack it from different angles (contrarian, first-principles, future maintainer, and more), and a judge returns green, reshape, or kill.</span></div>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <div class="beat">
+      <div class="flow" style="flex-direction:column">
+        <div class="step"><span class="src">Me</span><b>Decide what's worth building</b><small>Ideas get captured, then roasted, then scoped</small></div>
+        <div class="arrow" style="transform:none;text-align:center">↓</div>
+        <div class="step"><span class="src">Claude + me</span><b>Plan, then build in small tested steps</b><small>Tests first, a code review after, and the plan written down before any code</small></div>
+        <div class="arrow" style="transform:none;text-align:center">↓</div>
+        <div class="step"><span class="src">Me</span><b>Check it on the real thing</b><small>A real storm, a real yard, a real table. Not "the tests pass."</small></div>
+      </div>
+      <div class="prose">
+        <h3>What "built with AI" actually means here</h3>
+        <p>I read code, but I don't hand-type most of it anymore. My job is the part AI is bad at: knowing what's worth building, noticing when an answer is confidently wrong, and testing against reality.</p>
+        <p>The pages in this notebook are full of those moments: the heat rule that was really a different rule, the laser scan that remembered a tree that's gone, the money bugs a green test suite missed. Catching those is the job.</p>
+      </div>
+    </div>
+
+    <details class="hood">
+      <summary>Under the hood</summary>
+      <div class="inner">
+        <ul>
+          <li><strong>Claude Code</strong> as the build partner, driven by a git repository of instructions, skills and project notes, so the system remembers the work across days and devices.</li>
+          <li><strong>Scheduled tasks</strong> on a Windows laptop run the headless shifts. An always-on Linux mini-server at home ("hearth") serves the public pages and the lightning watcher.</li>
+          <li><strong>Built to survive without the AI.</strong> Every tool is rated on whether it would still run if the AI went away. Most of what's in this notebook would, because the AI helped build them but isn't needed to run them.</li>
+          <li><strong>Free and open-source wherever possible</strong>, local-first, and running on hardware I own.</li>
+          <li>About 40 projects and roughly 4,800 automated tests across 16 test suites.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <nav class="pager" data-pager aria-label="Previous and next page"></nav>
+</main>
+
+<footer class="foot"><div class="wrap">
+  <span class="hand">Made by hand (and with Claude) in Kansas City.</span> · <a data-contact href="#contact"><span data-contact-text>timothyjsquires+workbench [at] gmail [dot] com</span></a><br>
+  <span data-pageno></span> · Screens are from the real apps. Business screens use made-up demo data, and no real customers appear anywhere.<br>
+  I run my own hosting too. This site is published free on GitHub Pages, and the live pieces (the lightning watcher, the D&amp;D ledger) run on a small Linux server at my house.
+</div></footer>
+<script src="assets/site.js"></script>
+<script>
+  // hour ticks for the 24-hour dial
+  (function () {
+    var g = document.getElementById("ticks"), NS = "http://www.w3.org/2000/svg";
+    for (var h = 0; h < 24; h++) {
+      var a = (h / 24) * 2 * Math.PI - Math.PI / 2;
+      var x1 = 220 + Math.cos(a) * 158, y1 = 220 + Math.sin(a) * 158;
+      var x2 = 220 + Math.cos(a) * 170, y2 = 220 + Math.sin(a) * 170;
+      var l = document.createElementNS(NS, "line");
+      l.setAttribute("x1", x1); l.setAttribute("y1", y1); l.setAttribute("x2", x2); l.setAttribute("y2", y2);
+      l.setAttribute("class", "tick"); g.appendChild(l);
+      if (h % 6 === 0) {
+        var t = document.createElementNS(NS, "text");
+        t.setAttribute("x", 220 + Math.cos(a) * 140); t.setAttribute("y", 220 + Math.sin(a) * 140);
+        t.setAttribute("class", "hr");
+        t.textContent = ["midnight", "6 am", "noon", "6 pm"][h / 6];
+        g.appendChild(t);
+      }
+    }
+  })();
+</script>
+</body>
+</html>

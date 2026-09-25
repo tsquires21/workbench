@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>More From the Bench · The Workbench</title>
+<meta name="description" content="Smaller builds: trade calculators built to sell, a camper battery copilot, a fantasy football draft engine, a severe-weather watcher, a night-sky butler, and more.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="More from the bench">
+<meta property="og:description" content="Trade calculators, a camper battery copilot, a draft-day engine, and more small, specific tools.">
+<meta property="og:image" content="https://tsquires21.github.io/workbench/img/og-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Figtree:wght@400;600;700&family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..700,0..100,0..1&family=JetBrains+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  .indexcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 22px; }
+  .ic {
+    background-color: var(--card);
+    background-image: linear-gradient(transparent 44px, color-mix(in srgb, var(--red-pencil) 45%, transparent) 44px, color-mix(in srgb, var(--red-pencil) 45%, transparent) 46px, transparent 46px),
+                      repeating-linear-gradient(transparent 0 27px, color-mix(in srgb, var(--blue-pencil) 18%, transparent) 27px 28px);
+    background-position: 0 0, 0 18px;
+    padding: 12px 18px 16px; box-shadow: var(--shadow); transform: rotate(var(--r, -.6deg)); line-height: 28px;
+  }
+  .ic:nth-child(even) { --r: .7deg; }
+  .ic h3 { font: 700 1.6rem/32px var(--f-hand); margin: 0 0 14px; color: var(--ink); }
+  .ic p { margin: 0; font-size: .95rem; color: var(--ink-soft); }
+  .ic .tag { float: right; font: 700 .65rem/32px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+</style>
+</head>
+<body data-accent="workbench">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><div class="wrap">
+  <a class="brand" href="index.html"><svg class="doodle" viewBox="0 0 32 32" aria-hidden="true"><path d="M6 26 L19 13"/><path d="M17 9 l6 -3 l4 4 l-3 6 l-4 -1 z"/><path class="fill" d="M17 9 l6 -3 l4 4 l-3 6 l-4 -1 z"/></svg>The Workbench <small>by Tim Squires</small></a>
+  <nav><a class="hide-sm" href="index.html#projects">Projects</a><a class="hide-sm" href="build-for-you.html">Work with me</a>
+    <button class="lamp" type="button" aria-label="Toggle theme"><svg class="doodle" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/></svg></button></nav>
+</div></header>
+
+<main id="main">
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="kicker"><svg class="doodle" viewBox="0 0 40 40" aria-hidden="true"><rect x="5" y="10" width="30" height="22" rx="2"/><path d="M5 17h30"/><path class="fill" d="M5 10h30v7H5z"/><path d="M12 24h10"/></svg>No. 08 · Odds &amp; ends</div>
+        <h1>More from <span class="scribble">the bench.</span></h1>
+        <p class="lede">Not everything needs a whole page. These are the smaller tools, each built because a specific annoyance came up more than twice.</p>
+      </div>
+      <div class="device-stage"><div class="phone tilt-r"><div class="screen"><img src="img/workbench/trade-calcs.webp" alt="Trade Calcs: six calculator apps on one engine, pipefitter, electrician, concrete, HVAC and more" width="780" height="1688" data-zoom></div></div></div>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <div class="indexcards">
+      <article class="ic"><span class="tag">Built to sell</span><h3>Trade calculators</h3><p>Six calculator apps, for pipefitters, electricians, concrete, HVAC and more, all on one shared, tested engine. Pure math and lookup tables, with no accounts and no network. The formulas get checked by working tradespeople before anything ships.</p></article>
+      <article class="ic"><span class="tag">Android</span><h3>Shift calendar</h3><p>A rotating-shift calendar for nurses and plant workers, built so a daylight-saving change can't knock your schedule an hour off.</p></article>
+      <article class="ic"><span class="tag">Android</span><h3>Row counter</h3><p>A knitting and crochet counter that handles repeats inside repeats and advances them automatically. Built and running. It's waiting on a real phone to test the buzz.</p></article>
+      <article class="ic"><span class="tag">Weather</span><h3>Weather sentinel</h3><p>A severe-weather watcher that only alerts when the warning's actual shape covers where you are, not just because your county is named.</p></article>
+      <article class="ic"><span class="tag">Camper</span><h3>Camper energy copilot</h3><p>"Can I run this, and when does the battery die?" Answered from physics alone, with no internet needed and nothing to go out of date.</p></article>
+      <article class="ic"><span class="tag">Sports</span><h3>Fantasy draft engine</h3><p>Ranks players by value over replacement, scored to each league's exact rules. Its keeper schedule matched the league site at every one of 210 draft slots.</p></article>
+      <article class="ic"><span class="tag">Sky</span><h3>Night-sky butler</h3><p>Meteor showers, planets and aurora, but only when the clouds and the Moon will actually cooperate. Replaying all of 2026, it would have pinged exactly four times.</p></article>
+      <article class="ic"><span class="tag">Kitchen</span><h3>Recipe box</h3><p>Paste a recipe link and keep just the recipe, without the life story. It reads the structured data that recipe sites publish, and it never silently converts your units.</p></article>
+      <article class="ic"><span class="tag">Money</span><h3>Wishlist watcher</h3><p>A daily price check on things I actually want, which only speaks up on a real price drop.</p></article>
+      <article class="ic"><span class="tag">Camper</span><h3>Campground finder</h3><p>Finds pet-friendly campgrounds that fit our trailer and truck within a couple of hours' drive, with live availability where the park allows it. Paused, because the two parks we actually use don't publish any.</p></article>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <div class="sticky">
+      <h3>Wondering how one person builds all this?</h3>
+      <p>Next up is <a href="aios.html">how I build</a>: a research agent, overnight work shifts, and a server in the house. After that, <a href="build-for-you.html">the kinds of things I could build with you</a>.</p>
+    </div>
+  </section>
+
+  <nav class="pager" data-pager aria-label="Previous and next page"></nav>
+</main>
+
+<footer class="foot"><div class="wrap">
+  <span class="hand">Made by hand (and with Claude) in Kansas City.</span> · <a data-contact href="#contact"><span data-contact-text>timothyjsquires+workbench [at] gmail [dot] com</span></a><br>
+  <span data-pageno></span> · Screens are from the real apps. Business screens use made-up demo data, and no real customers appear anywhere.<br>
+  I run my own hosting too. This site is published free on GitHub Pages, and the live pieces (the lightning watcher, the D&amp;D ledger) run on a small Linux server at my house.
+</div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

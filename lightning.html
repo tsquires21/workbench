@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Heat &amp; Lightning · The Workbench</title>
+<meta name="description" content="A phone app for a youth soccer club: forecast heat against the league's cancellation chart, satellite lightning within 10 miles, and a 30-minute clock that starts itself.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="Heat &amp; lightning for game day">
+<meta property="og:description" content="Satellite lightning, the league's own rules, and a 30-minute clock that starts itself.">
+<meta property="og:image" content="https://tsquires21.github.io/workbench/img/og-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Figtree:wght@400;600;700&family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..700,0..100,0..1&family=JetBrains+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body data-accent="lightning">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><div class="wrap">
+  <a class="brand" href="index.html"><svg class="doodle" viewBox="0 0 32 32" aria-hidden="true"><path d="M6 26 L19 13"/><path d="M17 9 l6 -3 l4 4 l-3 6 l-4 -1 z"/><path class="fill" d="M17 9 l6 -3 l4 4 l-3 6 l-4 -1 z"/></svg>The Workbench <small>by Tim Squires</small></a>
+  <nav><a class="hide-sm" href="index.html#projects">Projects</a><a class="hide-sm" href="build-for-you.html">Work with me</a>
+    <button class="lamp" type="button" aria-label="Toggle theme"><svg class="doodle" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/></svg></button></nav>
+</div></header>
+
+<main id="main">
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="kicker"><svg class="doodle" viewBox="0 0 40 40" aria-hidden="true"><path d="M23 3 L10 22 h9 l-3 15 L30 16 h-9 z"/><path class="fill" d="M23 3 L10 22 h9 l-3 15 L30 16 h-9 z"/></svg>No. 03 · Heat &amp; Lightning</div>
+        <h1>Is the game still on? <span class="scribble">Ask the satellite.</span></h1>
+        <p class="lede">A friend's kid plays for Union KC Soccer Club. In summer, games get shortened or cancelled for heat. In storm season, one strike within 10 miles stops play for 30 minutes. He was checking a web page and a lightning map several times a week and guessing. So I built him an app.</p>
+        <div class="stamps">
+          <span class="stamp">Field-tested<b>real storm · 9.4 mi</b></span>
+          <span class="stamp">Satellite delay<b>~10 seconds</b></span>
+          <span class="stamp">Cost to run<b>$0</b></span>
+        </div>
+      </div>
+      <div class="device-stage">
+        <div class="phone tilt-l small"><div class="screen"><img src="img/lightning/heat-light.webp" alt="Heat check: Paragon Star, 84.2°F WBGT, games on as scheduled" width="780" height="1760" data-zoom></div></div>
+        <div class="phone tilt-r small"><div class="screen"><img src="img/lightning/clock-screen.webp" alt="Lightning view: a strike 9.4 miles out and the 30:00 hold clock running" width="800" height="1731" data-zoom></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <div class="section-label">What it does</div>
+
+    <div class="beat narrow-visual">
+      <div class="device-stage"><div class="phone tilt-l"><div class="screen"><img src="img/lightning/heat-dark.webp" alt="The heat view in dark mode, with the three ways to read the heat: chart, formula, NWS model" width="780" height="1760" data-zoom></div></div></div>
+      <div class="prose">
+        <span class="num">one</span>
+        <h3>The obvious answer was wrong</h3>
+        <p>The request was "check the wet-bulb temperature." But Heartland Soccer, the regional league, doesn't cancel on wet bulb. It uses <strong>WBGT</strong> (wet-bulb globe temperature), which also counts sunshine and wind. On one test afternoon the two were <strong>11 degrees apart</strong> and gave different answers. Wet bulb said "games on." The real rule said "heat schedule: shortened games and water breaks."</p>
+        <p>So the app shows WBGT hour by hour for each field complex, sorted into the league's three outcomes: games on, heat schedule, or cancelled.</p>
+        <p class="note"><svg class="doodle" viewBox="0 0 40 40" aria-hidden="true"><path d="M36 8 C 22 6, 10 14, 6 30"/><path d="M4 22 L6 31 L14 27"/></svg>Fun fact: that cancel line traces back to a 1984 medical paper on marathon runners.</p>
+      </div>
+    </div>
+
+    <div class="beat flip">
+      <figure class="taped" style="margin:0"><img src="img/lightning/ussoccer-chart.webp" alt="The US Soccer WBGT chart: a grid of temperature columns and humidity rows" width="1000" height="514" data-zoom><figcaption>The league's printed chart. All 432 boxes, now in the app.</figcaption></figure>
+      <div class="prose">
+        <span class="num">two</span>
+        <h3>A printed chart, turned into data</h3>
+        <p>The league publishes a chart: find the temperature, find the humidity, read the box. I pulled all <strong>432 boxes</strong> out of the PDF and checked every one against the formula behind it. They all agreed to within one degree.</p>
+        <p>Then the interesting part: <strong>how you round matters.</strong> The chart only has boxes every couple of degrees, so do you round to the nearest box, or down? Across one week's 13 playing hours, that choice flipped the verdict in <strong>4 of them</strong>. The math slightly favoured rounding to the nearest box. But the person using it reads the chart by running a finger across and rounding down, so that's what the app does, because matching how the reader reads the chart beats matching the formula. The app also shows all three methods side by side, so nobody is surprised.</p>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="toy" data-storm>
+        <div class="toy-label"><span>Try it: the 10-mile rule</span><span>sped up 60×</span></div>
+        <div class="storm">
+          <svg viewBox="0 0 320 320" role="img" aria-label="Rings at 5, 10, and 15 miles around the field">
+            <circle class="ring" cx="160" cy="160" r="60"/>
+            <circle class="ring ten" cx="160" cy="160" r="120"/>
+            <circle class="ring" cx="160" cy="160" r="156"/>
+            <rect class="field" x="150" y="153" width="20" height="14" rx="2"/>
+            <text x="160" y="36" text-anchor="middle" style="font:12px var(--f-mono);fill:var(--accent)">10 mi</text>
+            <text x="160" y="97" text-anchor="middle" style="font:11px var(--f-mono);fill:var(--pencil)">5 mi</text>
+          </svg>
+          <div>
+            <div class="countdown" aria-live="polite">--:--</div>
+            <p class="status" aria-live="polite">All clear. Waiting for weather.</p>
+            <div class="controls">
+              <button class="btn accent" type="button" data-strike="9.4">⚡ Strike at 9.4 mi</button>
+              <button class="btn" type="button" data-strike="13">Strike at 13 mi</button>
+              <button class="btn" type="button" data-reset>Clear</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="prose">
+        <span class="num">three</span>
+        <h3>Lightning: a clock that starts itself</h3>
+        <p>The rule comes straight from Sporting Lee's Summit's published weather policy. A strike within <strong>10 miles</strong> stops play. Play resumes after <strong>30 minutes</strong> with nothing new inside that ring, and any new strike restarts the clock.</p>
+        <p>The app watches for strikes and starts the 30-minute clock by itself, timed from the strike, not from when you noticed. It survives a locked phone or a reload. Try the demo: a strike at 9.4 miles starts the clock, one at 13 doesn't.</p>
+      </div>
+    </div>
+
+    <div class="beat flip narrow-visual">
+      <figure class="taped r" style="margin:0"><img src="img/lightning/thunder-odds.webp" alt="Chance of thunder, hour by hour, from the National Weather Service" width="800" height="985" data-zoom><figcaption>Hourly thunder odds for the chosen field, from the National Weather Service.</figcaption></figure>
+      <div class="prose">
+        <span class="num">four</span>
+        <h3>Where the lightning data comes from</h3>
+        <p>This was the hard part. The popular free lightning map explicitly forbids using its data for storm warnings. NOAA's strike data comes as huge science files with no simple way in, and the government map service that used to show lightning is gone.</p>
+        <p>So a small computer at my house does it. Every minute it pulls the latest data from <strong>GOES-19</strong>, a NOAA weather satellite that watches for lightning flashes, keeps anything near Kansas City, and publishes a tiny file the phone reads. I measured the satellite's delay at about <strong>10 seconds</strong>. To save bandwidth, it checks the thunder forecast first and skips the download when storms are unlikely.</p>
+      </div>
+    </div>
+
+    <details class="hood">
+      <summary>Under the hood</summary>
+      <div class="inner">
+        <div class="flow">
+          <div class="step"><span class="src">NOAA · GOES-19</span><b>Lightning mapper</b><small>A new file about every 20 seconds, on public cloud storage</small></div>
+          <div class="arrow">→</div>
+          <div class="step"><span class="src">Home server</span><b>glm_watch.py</b><small>Every 60 s: download, keep flashes near KC from the last 35 min</small></div>
+          <div class="arrow">→</div>
+          <div class="step"><span class="src">Tiny script file</span><b>glm-kc.js</b><small>Loaded with a script tag to sidestep browser cross-site blocking</small></div>
+          <div class="arrow">→</div>
+          <div class="step"><span class="src">The phone</span><b>One HTML file</b><small>Distance to each field, the 10-mile test, the self-starting clock</small></div>
+        </div>
+        <ul>
+          <li><strong>Heat:</strong> hourly temperature, humidity, sun and wind from free weather APIs (Open-Meteo and the National Weather Service), turned into WBGT three ways: the printed chart, the formula behind it, and the NWS model.</li>
+          <li><strong>The whole app is one self-contained HTML file</strong> on GitHub Pages, with no account, no server of its own, and no API key. It installs to an iPhone home screen with the club crest as its icon. If the home server is down, it still gives the clock and the forecast.</li>
+          <li><strong>Colours sampled from the crest itself</strong>, pixel by pixel, not from the club's website, which uses a darker navy than the crest.</li>
+          <li>50 automated checks run the lightning logic against made-up storms: auto-start at 6 miles but not at 13, cancel versus a new strike, a stale feed, and so on.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <section class="block wrap">
+    <div class="beat narrow-visual">
+      <figure class="taped" style="margin:0"><img src="img/lightning/league-rule.webp" alt="The rule card inside the app, explaining the 10-mile / 30-minute rule and that the horn only covers one complex" width="800" height="690" data-zoom><figcaption>The rule, explained inside the app.</figcaption></figure>
+      <div class="honest">
+        <p><strong>It does not detect every strike, and it says so on screen.</strong> The satellite catches roughly seven flashes in ten during daylight, and positions can be about two miles off. Hearing thunder beats any device.</p>
+        <p>It was tested for real on 9 September, when a flash 9.4 miles from the Paragon Star fields started the clock exactly as designed. It's a help, not a guarantee, and the app is clearly labelled as unofficial and not affiliated with the club.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <div class="sticky">
+      <h3>Could this work for you?</h3>
+      <p>Plenty of businesses live and die by the weather: outdoor crews, event organisers, anyone who has to decide whether it's safe to send people out. The same trick works for all of them: <strong>free government weather data, narrowed down to the exact places that matter to you.</strong></p>
+      <p style="margin:0"><a href="build-for-you.html">Got a problem like these? →</a></p>
+    </div>
+  </section>
+
+  <nav class="pager" data-pager aria-label="Previous and next page"></nav>
+</main>
+
+<footer class="foot"><div class="wrap">
+  <span class="hand">Made by hand (and with Claude) in Kansas City.</span> · <a data-contact href="#contact"><span data-contact-text>timothyjsquires+workbench [at] gmail [dot] com</span></a><br>
+  <span data-pageno></span> · Screens are from the real apps. Business screens use made-up demo data, and no real customers appear anywhere.<br>
+  I run my own hosting too. This site is published free on GitHub Pages, and the live pieces (the lightning watcher, the D&amp;D ledger) run on a small Linux server at my house.
+</div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Multimeter Tutor · The Workbench</title>
+<meta name="description" content="A working replica of a real multimeter: turn the dial, move the leads, and it reads what the real meter would, including the mistakes. Try it right here.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="A multimeter you can't break">
+<meta property="og:description" content="Turn the dial, move the leads, and see what the real meter would say, mistakes included.">
+<meta property="og:image" content="https://tsquires21.github.io/workbench/img/og-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Figtree:wght@400;600;700&family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..700,0..100,0..1&family=JetBrains+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body data-accent="multimeter">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><div class="wrap">
+  <a class="brand" href="index.html"><svg class="doodle" viewBox="0 0 32 32" aria-hidden="true"><path d="M6 26 L19 13"/><path d="M17 9 l6 -3 l4 4 l-3 6 l-4 -1 z"/><path class="fill" d="M17 9 l6 -3 l4 4 l-3 6 l-4 -1 z"/></svg>The Workbench <small>by Tim Squires</small></a>
+  <nav><a class="hide-sm" href="index.html#projects">Projects</a><a class="hide-sm" href="build-for-you.html">Work with me</a>
+    <button class="lamp" type="button" aria-label="Toggle theme"><svg class="doodle" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/></svg></button></nav>
+</div></header>
+
+<main id="main">
+  <section class="hero wrap">
+    <div class="kicker"><svg class="doodle" viewBox="0 0 40 40" aria-hidden="true"><rect x="9" y="3" width="22" height="34" rx="4"/><rect class="fill" x="13" y="7" width="14" height="8"/><rect x="13" y="7" width="14" height="8"/><circle cx="20" cy="24" r="5"/><path d="M20 24 l3 -3"/></svg>No. 07 · The Multimeter Tutor</div>
+    <h1>A multimeter <span class="scribble">you can't break.</span></h1>
+    <p class="lede" style="max-width:60ch">I bought a basic multimeter to fix things around the house (a dryer, to start) and realised the hard part isn't reading the number. It's knowing where the dial goes and where the leads plug in. So I built a working copy of that exact meter. Turn the dial, move the leads, pick what you're testing, and it reads what the real one would. That includes the mistakes: plug into the wrong jack across a battery and it blows the fuse, and every reading after that is a false zero, just like the real thing.</p>
+    <div class="stamps">
+      <span class="stamp">Real jobs<b>24</b></span>
+      <span class="stamp">Jacks<b>all 4, live</b></span>
+      <span class="stamp">Mistakes<b>simulated</b></span>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <div class="section-label">Try it, it's the real thing</div>
+    <iframe class="embed" src="embed/multimeter-tutor.html" title="Multimeter tutor: an interactive replica of the Performance Tool W2972" loading="lazy"></iframe>
+    <p class="hand" style="margin-top:12px">On a phone? It works there too, but it's roomier <a href="embed/multimeter-tutor.html">opened full screen</a>.</p>
+  </section>
+
+  <section class="block wrap">
+    <div class="beat">
+      <div class="device-stage"><div class="phone tilt-l"><div class="screen"><img src="img/multimeter/tutor-phone.webp" alt="The multimeter tutor on a phone" width="780" height="1688" data-zoom></div></div></div>
+      <div class="prose">
+        <h3>A teacher next to the meter</h3>
+        <p>Beside the meter there are 24 real jobs, like a car battery, a wall outlet, a dryer's thermal fuse or a dead Xbox power brick. Each one says where the dial goes, which jacks to use, what reading you should expect, and what that reading means.</p>
+        <p>It refuses to do dangerous things. It won't let you measure resistance on a live circuit, and it explains why.</p>
+      </div>
+    </div>
+    <details class="hood">
+      <summary>Under the hood</summary>
+      <div class="inner">
+        <ul>
+          <li><strong>One HTML file</strong>, about 90 KB, with no server. That's why it can live inside this page.</li>
+          <li><strong>The meter is data, not drawings.</strong> Every dial position, jack and fuse is described in one table, and both the picture and the readings come from it. Fixing a dial label means changing one line.</li>
+          <li><strong>Traced from the product photo.</strong> The first version got the meter substantially wrong: it had three jacks where the real one has four, and a different dial. It was rebuilt by tracing the store's product photo, position by position.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+
+  <nav class="pager" data-pager aria-label="Previous and next page"></nav>
+</main>
+
+<footer class="foot"><div class="wrap">
+  <span class="hand">Made by hand (and with Claude) in Kansas City.</span> · <a data-contact href="#contact"><span data-contact-text>timothyjsquires+workbench [at] gmail [dot] com</span></a><br>
+  <span data-pageno></span> · Screens are from the real apps. Business screens use made-up demo data, and no real customers appear anywhere.<br>
+  I run my own hosting too. This site is published free on GitHub Pages, and the live pieces (the lightning watcher, the D&amp;D ledger) run on a small Linux server at my house.
+</div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

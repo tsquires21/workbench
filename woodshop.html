@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Woodshop · The Workbench</title>
+<meta name="description" content="A woodshop that measures with a phone: a 3D-scanned walnut slab with guitar bodies laid on at true scale, a to-scale shop planner, and calculators backed by the USDA Wood Handbook.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="Measuring with a phone scan">
+<meta property="og:description" content="A walnut slab scanned in 3D, guitar bodies laid on at true scale, and a shop planner drawn from a hand sketch.">
+<meta property="og:image" content="https://tsquires21.github.io/workbench/img/og-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Figtree:wght@400;600;700&family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..700,0..100,0..1&family=JetBrains+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body data-accent="woodshop">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><div class="wrap">
+  <a class="brand" href="index.html"><svg class="doodle" viewBox="0 0 32 32" aria-hidden="true"><path d="M6 26 L19 13"/><path d="M17 9 l6 -3 l4 4 l-3 6 l-4 -1 z"/><path class="fill" d="M17 9 l6 -3 l4 4 l-3 6 l-4 -1 z"/></svg>The Workbench <small>by Tim Squires</small></a>
+  <nav><a class="hide-sm" href="index.html#projects">Projects</a><a class="hide-sm" href="build-for-you.html">Work with me</a>
+    <button class="lamp" type="button" aria-label="Toggle theme"><svg class="doodle" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/></svg></button></nav>
+</div></header>
+
+<main id="main">
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="kicker"><svg class="doodle" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 32 L26 14"/><path d="M24 10 l8 -4 l2 2 l-4 8 z"/><path class="fill" d="M24 10 l8 -4 l2 2 l-4 8 z"/><path d="M5 35 l4 -4"/></svg>No. 04 · The Woodshop</div>
+        <h1>Measure twice. <span class="scribble">Scan once.</span></h1>
+        <p class="lede">I have eight slabs of black walnut and a hundred ideas for them. Walnut is too precious to guess with. So the shop's tools start with a phone: scan the wood in 3D, lay the plan on top at true scale, and only then pick up a saw.</p>
+        <div class="stamps">
+          <span class="stamp">Slab scanned<b>21.1 × 44.5 in</b></span>
+          <span class="stamp">Wall angle<b>45.5° from a scan</b></span>
+          <span class="stamp">Wood data<b>USDA · cited</b></span>
+        </div>
+      </div>
+      <div class="browser"><div class="bar"><i></i><i></i><i></i><span>walnut slab D · guitar body overlay</span></div>
+        <img src="img/woodshop/slab-overlay.webp" alt="A 3D-scanned walnut slab seen from above with guitar body outlines laid over it" width="1600" height="1111" data-zoom></div>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <div class="section-label">What it does</div>
+
+    <div class="beat narrow-visual">
+      <figure class="taped" style="margin:0"><img src="img/woodshop/slab-scan.webp" alt="The walnut slab, flattened into a true-scale top-down image from a phone scan" width="423" height="890" style="max-height:560px;width:auto;margin-inline:auto" data-zoom><figcaption>Slab D, straight from the scan. The dark patches are knots and voids.</figcaption></figure>
+      <div class="prose">
+        <span class="num">one</span>
+        <h3>A phone scan, turned into a flat, true-scale photo</h3>
+        <p>The iPhone's LiDAR sensor and a free app capture the slab in 3D. The scan also picks up the floor, the bench and the slab next to it. So I wrote a pipeline that finds the slab's top surface, throws away everything else, and lays it out flat at exactly 20 pixels per inch.</p>
+        <p>The result is a photo you can measure: this slab is <strong>21.1 × 44.5 inches</strong>, with every knot where it really is.</p>
+      </div>
+    </div>
+
+    <div class="beat flip">
+      <div class="browser"><div class="bar"><i></i><i></i><i></i><span>slab-overlay.html</span></div><img src="img/woodshop/slab-overlay.webp" alt="Guitar outlines (Boden, Stratocaster, Les Paul, Telecaster, Jazzmaster and more) that can be dragged over the slab" width="1600" height="1111" data-zoom></div>
+      <div class="prose">
+        <span class="num">two</span>
+        <h3>Try ten guitars on before cutting one</h3>
+        <p>Ten guitar body shapes sit on top of the scan at true size: Stratocaster, Les Paul, Telecaster, Jazzmaster and more. Drag them around, rotate them, and see which one dodges the knots.</p>
+        <p>The rule that matters is simple. The knots can go anywhere except under the neck pocket, the bridge, and the path between them, because that's where the strings pull.</p>
+        <p class="note"><svg class="doodle" viewBox="0 0 40 40" aria-hidden="true"><path d="M36 8 C 22 6, 10 14, 6 30"/><path d="M4 22 L6 31 L14 27"/></svg>Three shapes come from real templates. The other seven are careful approximations, and the app says which is which.</p>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div style="display:grid;gap:18px">
+        <figure class="taped" style="margin:0"><img src="img/woodshop/shop-sketch.webp" alt="A hand sketch of the 21 by 27 foot shop, drawn on an e-ink tablet" width="1600" height="1200" data-zoom><figcaption>The starting point: a sketch on an e-ink tablet.</figcaption></figure>
+        <div class="browser"><div class="bar"><i></i><i></i><i></i><span>shop-layout-planner.html</span></div><img src="img/woodshop/shop-planner.webp" alt="The to-scale shop planner: draggable machines in a 21 by 27 foot room with the clear floor area highlighted" width="1600" height="1000" data-zoom></div>
+      </div>
+      <div class="prose">
+        <span class="num">three</span>
+        <h3>From a sketch to a to-scale shop plan</h3>
+        <p>I sketched the 21 × 27 ft shop on a tablet, and it became an interactive plan where every machine is drawn to scale and can be dragged around.</p>
+        <p>The breakthrough wasn't technical. Every machine in my shop is on wheels, so there's no single "best layout." The real question is <strong>how much clear floor can I get</strong> when everything is parked. So that's what the planner measures.</p>
+        <p>The same scanning trick measured a kitchen nook with an odd wall. The scan says that corner is <strong>45.5°</strong>, which is exactly the angle a custom table needs to meet.</p>
+      </div>
+    </div>
+
+    <div class="beat flip narrow-visual">
+      <div class="device-stage">
+        <div class="phone small tilt-l"><div class="screen"><img src="img/woodshop/wood-movement.webp" alt="Wood movement calculator: black walnut, 6 inches wide, flatsawn, Kansas City seasonal moisture swing" width="780" height="1688" data-zoom></div></div>
+        <div class="phone small tilt-r"><div class="screen"><img src="img/woodshop/cut-list.webp" alt="Cut list optimizer: stock boards and the pieces you need" width="780" height="1688" data-zoom></div></div>
+      </div>
+      <div class="prose">
+        <span class="num">four</span>
+        <h3>Shop math, with sources</h3>
+        <p>Wood swells and shrinks with the seasons, and a tabletop that ignores that will crack. The <strong>wood movement calculator</strong> uses figures for 32 species from the USDA's <em>Wood Handbook</em>, and every number cites its table and page.</p>
+        <p>Checking those citations caught a mistake: the value I'd been using for walnut under-predicted movement by about <strong>15%</strong>. The <strong>cut-list optimizer</strong> packs the pieces you need onto the boards you have and shows how much you'll waste.</p>
+      </div>
+    </div>
+
+    <details class="hood">
+      <summary>Under the hood</summary>
+      <div class="inner">
+        <div class="flow">
+          <div class="step"><span class="src">iPhone LiDAR</span><b>3D scan</b><small>Scaniverse exports a textured mesh (OBJ)</small></div>
+          <div class="arrow">→</div>
+          <div class="step"><span class="src">RANSAC</span><b>Find the slab</b><small>Fit the flat, walnut-coloured plane; drop floor and bench</small></div>
+          <div class="arrow">→</div>
+          <div class="step"><span class="src">Render</span><b>Top-down at 20 px/in</b><small>Depth masking, hole filling, knot voids patched</small></div>
+          <div class="arrow">→</div>
+          <div class="step"><span class="src">One HTML file</span><b>Overlay planner</b><small>Outlines from 3D-print templates and full-size plans</small></div>
+        </div>
+        <ul>
+          <li><strong>Wall angles:</strong> a small script finds the floor in a room scan, groups the wall surfaces, and reports the angle between them.</li>
+          <li><strong>Guitar outlines</strong> come from a 3D-printable template (flattened to 2D), a full-size plan (paths extracted from its SVG), and hand-authored curves scaled to published dimensions.</li>
+          <li><strong>The shop hub</strong> is a small Flask app with a project journal (idea → planned → building → done, build steps, sketches, measurements). New tools plug in as modules without touching the core.</li>
+          <li>A tool inventory from 42 photos, plus a manual library with a folder for each tool: routers, sanders, a Shopsmith Mark V and more.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <section class="block wrap">
+    <div class="honest">
+      <p><strong>The woodshop app itself is still mostly scaffolding.</strong> The project journal and calculators work. The tool catalogue, the jig and scrap inventories, and the per-project hubs exist as data and plans, not screens yet. What you see above are the pieces that got built first because a real project needed them.</p>
+      <p>The shop planner is the design direction for the hub: to scale, draggable, and honest about what fits.</p>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <div class="sticky">
+      <h3>Could this work for you?</h3>
+      <p>A phone scan that turns into real measurements works on anything with odd angles: <strong>a room, a deck, a roof, a jobsite.</strong> Capture it once, and measure it at the desk as many times as you like.</p>
+      <p style="margin:0"><a href="build-for-you.html">Got a problem like these? →</a></p>
+    </div>
+  </section>
+
+  <nav class="pager" data-pager aria-label="Previous and next page"></nav>
+</main>
+
+<footer class="foot"><div class="wrap">
+  <span class="hand">Made by hand (and with Claude) in Kansas City.</span> · <a data-contact href="#contact"><span data-contact-text>timothyjsquires+workbench [at] gmail [dot] com</span></a><br>
+  <span data-pageno></span> · Screens are from the real apps. Business screens use made-up demo data, and no real customers appear anywhere.<br>
+  I run my own hosting too. This site is published free on GitHub Pages, and the live pieces (the lightning watcher, the D&amp;D ledger) run on a small Linux server at my house.
+</div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>
