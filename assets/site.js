@@ -10,6 +10,7 @@
     ["index.html", "Start here", "Start here", "Who I am, and five months of building"],
     ["garden.html", "The Garden", "Featured builds", "A yard that knows where the sun lands"],
     ["crm.html", "The Business System", "Featured builds", "Runs a cleaning company, and any other"],
+    ["storm.html", "Storm Tools", "Featured builds", "Where the hail hit, and whose roof"],
     ["lightning.html", "Heat & Lightning", "Featured builds", "Game-day calls from a satellite"],
     ["woodshop.html", "The Woodshop", "Featured builds", "Measuring with a phone scan"],
     ["music.html", "The Music Hub", "For fun, built seriously", "Theory for the instrument in your hands"],

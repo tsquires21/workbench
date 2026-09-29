@@ -47,6 +47,7 @@
 [data-accent="aios"]       { --accent: #2F5E9E; }
 [data-accent="workbench"]  { --accent: #6B5B95; }
 [data-accent="build"]      { --accent: #C4452B; }
+[data-accent="storm"]      { --accent: #B4531F; }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -71,6 +72,7 @@
   :root:not([data-theme="light"]) [data-accent="aios"]      { --accent: #8DB8FF; }
   :root:not([data-theme="light"]) [data-accent="workbench"] { --accent: #B9A7E8; }
   :root:not([data-theme="light"]) [data-accent="build"]     { --accent: #FF8C6B; }
+  :root:not([data-theme="light"]) [data-accent="storm"]     { --accent: #F0A06A; }
 }
 :root[data-theme="dark"] {
   --paper: #0F2238; --paper-2: #132A45;
@@ -94,6 +96,7 @@
 :root[data-theme="dark"] [data-accent="aios"]      { --accent: #8DB8FF; }
 :root[data-theme="dark"] [data-accent="workbench"] { --accent: #B9A7E8; }
 :root[data-theme="dark"] [data-accent="build"]     { --accent: #FF8C6B; }
+:root[data-theme="dark"] [data-accent="storm"]     { --accent: #F0A06A; }
 
 /* ── base ─────────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }

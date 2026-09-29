@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Storm Tools · The Workbench</title>
+<meta name="description" content="Three tools for a roofing company after a hailstorm: where it hit and how many homes, an inspection report with the storm of record attached, and where the crew should knock first. Built on free public weather data.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="Storm tools for a roofing crew">
+<meta property="og:description" content="Where the hail hit, the claim report, and where to knock first, on free public weather data.">
+<meta property="og:image" content="https://tsquires21.github.io/workbench/img/og-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Figtree:wght@400;600;700&family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..700,0..100,0..1&family=JetBrains+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body data-accent="storm">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><div class="wrap">
+  <a class="brand" href="index.html"><svg class="doodle" viewBox="0 0 32 32" aria-hidden="true"><path d="M6 26 L19 13"/><path d="M17 9 l6 -3 l4 4 l-3 6 l-4 -1 z"/><path class="fill" d="M17 9 l6 -3 l4 4 l-3 6 l-4 -1 z"/></svg>The Workbench <small>by Tim Squires</small></a>
+  <nav><a class="hide-sm" href="index.html#projects">Projects</a><a class="hide-sm" href="build-for-you.html">Work with me</a>
+    <button class="lamp" type="button" aria-label="Toggle theme"><svg class="doodle" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/></svg></button></nav>
+</div></header>
+
+<main id="main">
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="kicker"><svg class="doodle" viewBox="0 0 40 40" aria-hidden="true"><path d="M11 25a7 7 0 0 1 1-14 9 9 0 0 1 17 3 6 6 0 0 1-1 11z"/><path class="fill" d="M11 25a7 7 0 0 1 1-14 9 9 0 0 1 17 3 6 6 0 0 1-1 11z"/><circle cx="14" cy="32" r="1.8"/><circle cx="21" cy="35" r="1.8"/><circle cx="27" cy="31" r="1.8"/></svg>No. 03 · Storm Tools</div>
+        <h1>The morning after a hailstorm, <span class="scribble">on one screen.</span></h1>
+        <p class="lede">After a hailstorm, a roofing company has a few busy days to answer three questions. Where did it hit? Whose roofs are under it? And can we show the insurance company proof? These three tools answer all three from free public weather data. They run on any phone from a link, with nothing to install.</p>
+        <div class="stamps">
+          <span class="stamp">Storm reports<b>National Weather Service</b></span>
+          <span class="stamp">Homes on the map<b>735,551 in one metro</b></span>
+          <span class="stamp">Installs<b>none, just a link</b></span>
+        </div>
+      </div>
+      <div class="stage-combo">
+        <div class="browser"><div class="bar"><i></i><i></i><i></i><span>storm tools · start</span></div>
+          <img src="img/storm/hub.webp" alt="The storm tools' front page: 132,782 homes within 3 miles of hail on 19 August 2026, and cards for StormDesk, ClaimReady and Canvass" width="1600" height="1000" data-zoom></div>
+        <div class="phone tilt-r"><div class="screen"><img src="img/storm/stormdesk-phone.webp" alt="StormDesk on a phone: the night's hail reports drawn over the homes of the Kansas City metro" width="780" height="1688"></div></div>
+      </div>
+    </div>
+    <p class="hand" style="margin-top:18px">Prairie Sky Roofing &amp; Solar is made up. It's the same pretend roofer from the Business System page. The storm is real: 19 August 2026, hail up to 1¾ inches across the Kansas City metro. Customers, names and addresses are invented.</p>
+  </section>
+
+  <section class="block wrap">
+    <div class="section-label">What it does</div>
+
+    <div class="beat">
+      <div class="browser"><div class="bar"><i></i><i></i><i></i><span>stormdesk · replay</span></div><img src="img/storm/stormdesk.webp" alt="StormDesk: a map of hail reports over dots for homes, with homes hit, original-roof homes, estimated jobs and the towns ranked by jobs" width="1600" height="1000" data-zoom></div>
+      <div class="prose">
+        <span class="num">one</span>
+        <h3>Where it hit, and how many homes</h3>
+        <p>StormDesk replays the night. Every hail report the National Weather Service logged is drawn over every home in the market, one dot for about 50 homes. It counts the homes inside the hail, flags the ones old enough to still have their <strong>original roof</strong>, and ranks the towns by likely jobs, so the crew knows where to set up first.</p>
+        <p>It works before a storm, too. <strong>Forecast</strong> shows the government's severe-weather outlook for the week ahead, and <strong>Replay</strong> puts any past forecast next to what actually fell.</p>
+        <p class="note"><svg class="doodle" viewBox="0 0 40 40" aria-hidden="true"><path d="M36 8 C 22 6, 10 14, 6 30"/><path d="M4 22 L6 31 L14 27"/></svg>The company's own past customers light up on the map. One tap drafts a personal check-in text for each of them.</p>
+      </div>
+    </div>
+
+    <div class="beat flip">
+      <div class="browser"><div class="bar"><i></i><i></i><i></i><span>claimready · storm of record</span></div><img src="img/storm/claimready.webp" alt="ClaimReady's storm step: every storm report within 10 miles of the property, the date of loss, and the claim file" width="1600" height="1000" data-zoom></div>
+      <div class="prose">
+        <span class="num">two</span>
+        <h3>The storm of record, found for you</h3>
+        <p>An insurance claim needs a date of loss and proof that hail actually fell there. Give ClaimReady the address and it gathers every storm report within 10 miles from the last two years, then picks the closest hail on the likely night. For this made-up house, that's a 1.75-inch report less than a mile away.</p>
+      </div>
+    </div>
+
+    <div class="beat narrow-visual">
+      <div class="device-stage"><div class="phone"><div class="screen"><img src="img/storm/claimready-phone.webp" alt="The finished roof inspection report on a phone: the property, and the storm of record with its source" width="780" height="1688" data-zoom></div></div></div>
+      <div class="prose">
+        <span class="num">three</span>
+        <h3>Phone photos in, a clean report out</h3>
+        <p>On the roof, the inspector photographs a test square on each slope and counts the hail hits. ClaimReady turns that into a report an adjuster can read in a minute: the property, the storm of record with its source, the photo evidence, and a plain recommendation. It prints, or saves as a PDF.</p>
+        <p>The recommendation follows a stated rule rather than a hunch: <strong>replace when two or more slopes show 8 or more hits</strong> in their test square. The inspector can always overrule it, and the report says when they did.</p>
+      </div>
+    </div>
+
+    <div class="beat flip">
+      <div class="stage-combo">
+        <div class="browser"><div class="bar"><i></i><i></i><i></i><span>canvass · targets</span></div>
+          <img src="img/storm/canvass.webp" alt="Canvass: the hail swath, doors to knock, crew days needed, and the neighborhoods ranked as targets" width="1600" height="1000" data-zoom></div>
+        <div class="phone tilt-r"><div class="screen"><img src="img/storm/canvass-phone.webp" alt="Canvass on a phone: hail size, radius, number of reps and doors per day" width="780" height="1688"></div></div>
+      </div>
+      <div class="prose">
+        <span class="num">four</span>
+        <h3>Where to knock first</h3>
+        <p>Canvass plans the door-knocking. Set the hail size, the radius and the size of the crew, and it works out how many doors there are, how many days the crew needs, and which neighborhoods to start with. It counts <strong>owner-occupied homes only</strong>, because owners are the ones who decide on a roof.</p>
+        <p>Where a city requires a canvassing license, the area shows it along with the hours knocking is allowed. A do-not-knock list is built in, and every route opens in Google Maps with one tap.</p>
+      </div>
+    </div>
+
+    <details class="hood">
+      <summary>Under the hood</summary>
+      <div class="inner">
+        <ul>
+          <li><strong>Plain HTML and JavaScript, no server.</strong> Each tool is a single page that runs on the phone itself, so it works from a texted link with no accounts and nothing to install.</li>
+          <li><strong>Free public data only:</strong> National Weather Service storm reports (by way of the Iowa Environmental Mesonet), the Storm Prediction Center's outlooks, FEMA disaster declarations, US Census housing counts, and county parcel records. The latest reports are merged in live on top of a prepared history.</li>
+          <li><strong>Homes are counted in groups, never one by one.</strong> Parcel records are rolled up to neighborhoods of at least ten homes, and map points are rounded to about a city block. No homeowner's name or single address ever reaches the page.</li>
+          <li><strong>"Original roof" is a stated rule of thumb.</strong> A home built between 2005 and 2012 has probably never been re-roofed, so it's the likeliest to need one after a storm.</li>
+          <li><strong>Every estimate shows its assumptions.</strong> Jobs come from open numbers a manager can change, like the share of roofs damaged and the close rate, instead of a black box.</li>
+          <li><strong>Maps</strong> are Leaflet on free basemap tiles. The same pages switch to another market by changing one setting.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <section class="block wrap">
+    <div class="honest">
+      <p><strong>Estimates, shown as estimates.</strong> A storm report is one person's measurement at one spot, and hail is patchy. So the tools count homes near reports and say how near, and they keep the assumptions behind every job estimate out in the open, where a manager can see them and change them.</p>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <div class="sticky">
+      <h3>Could this work for you?</h3>
+      <p>Any business that moves when the weather does has the same bones: <strong>where it hit, who's affected, proof for the insurer, and a plan for the crew.</strong> Roofers, gutter and siding crews, tree services, restoration companies, and the agents who insure the homes they work on.</p>
+      <p style="margin:0"><a href="build-for-you.html">Got a problem like these? →</a></p>
+    </div>
+  </section>
+
+  <nav class="pager" data-pager aria-label="Previous and next page"></nav>
+</main>
+
+<footer class="foot"><div class="wrap">
+  <span class="hand">Made by hand (and with Claude) in Kansas City.</span> · <a data-contact href="#contact"><span data-contact-text>timothyjsquires+workbench [at] gmail [dot] com</span></a><br>
+  <span data-pageno></span> · Screens are from the real apps. Business screens use made-up demo data, and no real customers appear anywhere.<br>
+  I run my own hosting too. This site is published free on GitHub Pages, and the live pieces (the lightning watcher, the D&amp;D ledger) run on a small Linux server at my house.
+</div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>
